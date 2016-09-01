@@ -4,7 +4,18 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+aiohttp-jinja2==0.8.0
+aiohttp==0.22.5
+chardet==2.3.0            # via aiohttp
 click==6.6                # via pip-tools
 first==2.0.1              # via pip-tools
+flake8==3.0.4
+jinja2==2.8               # via aiohttp-jinja2
+markupsafe==0.23          # via jinja2
+mccabe==0.5.2             # via flake8
+multidict==1.2.2          # via aiohttp
+pillow==3.3.1
 pip-tools==1.7.0
+pycodestyle==2.0.0        # via flake8
+pyflakes==1.2.3           # via flake8
 six==1.10.0               # via pip-tools

@@ -1,1 +1,6 @@
+aiohttp
+aiohttp-jinja2
+pillow
+
 pip-tools
+flake8
