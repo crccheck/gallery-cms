@@ -1,10 +1,12 @@
+Gallery CMS
+===========
+
+A simple online gallery where the images are the database.
+
+Use meta information from IPTC instead of a database.
 
 
 Requirements
 ------------
 
-apt-get install libgexiv2-dev python3-gi
-
-In your virtualenv
-cdsitepackages
-ln -s /usr/lib/python3/dist-packages/gi
+make install

@@ -5,19 +5,25 @@ from urllib.parse import quote
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
-# from PIL import Image, IptcImagePlugin
+from PIL import Image, IptcImagePlugin
 
 import settings
 
 
 BASE_DIR = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
-# im = Image.open('/home/crc/Dropbox/Lenna.jpg')
-# exif = IptcImagePlugin.getiptcinfo(im)
+
+# Possibly a useful reference:
+# http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 
 
-class Image():
+class Item():
+    """A gallery item."""
     def __init__(self, path):
         self.path = path
+        abspath = settings.STORAGE_DIR + path  # why does os.path.join not work?
+        self.im = Image.open(abspath)
+        self.meta = IptcImagePlugin.getiptcinfo(self.im)
+        print(self.meta)
 
     @property
     def src(self):
@@ -32,8 +38,7 @@ class Image():
 async def homepage(request):
     # TODO get *.jpeg too
     images = glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True)
-
-    return {'images': (Image(x.replace(settings.STORAGE_DIR, '')) for x in images)}
+    return {'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images)}
 
 
 if __name__ == '__main__':
