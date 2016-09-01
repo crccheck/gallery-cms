@@ -12,7 +12,12 @@
 </head>
 <body>
   {% for image in images %}
-    <img src="/images{{ image.src }}">
+    <div>
+      <img src="/images{{ image.src }}">
+      {% for k, v in image.get_all_meta().items() %}
+        <p>{{ k }}: {{ v }}</p>
+      {% endfor %}
+    </div>
   {% endfor %}
 </body>
 </html>
