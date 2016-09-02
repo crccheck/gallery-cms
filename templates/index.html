@@ -12,12 +12,13 @@
 </head>
 <body>
   {% for image in images %}
-    <div>
+    <form method="POST" onsubmit="return false;">
+      <input type="hidden" name="src" value="{{ image.src }}">
       <img src="/images{{ image.src }}">
       {% for k, v in image.get_all_meta().items() %}
-        <p>{{ k }}: {{ v }}</p>
+        <p><label>{{ k }}</label>: <input type="text" value="{{ v }}"></p>
       {% endfor %}
-    </div>
+    </form>
   {% endfor %}
 </body>
 </html>

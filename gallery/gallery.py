@@ -18,11 +18,14 @@ class Item():
     # TODO use some sort of model to validate these values
     NAME = {
         (2, 0): 'ApplicationRecordVersion',
+        (2, 5): 'ObjectName',
+        (2, 15): 'Category',
         (2, 25): 'Keywords',
         (2, 40): 'SpecialInstructions',
         (2, 55): 'DateCreated',
         (2, 60): 'TimeCreated',
-        (2, 80): 'Byline',
+        (2, 80): 'By-line',
+        (2, 85): 'By-lineTitle',
         (2, 90): 'City',
         (2, 95): 'Province-State',
         (2, 103): 'OriginalTransmissionReference',
