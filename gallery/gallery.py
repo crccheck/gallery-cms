@@ -8,6 +8,7 @@ import jinja2
 from aiohttp import web
 from PIL import Image, IptcImagePlugin
 
+# from gallery import settings
 import settings
 
 
@@ -93,20 +94,27 @@ async def homepage(request):
 
 async def save(request):
     # TODO csrf
-    data = dict(await request.post())
+    data = await request.post()
     return web.Response(
         status=200,
-        body=json.dumps(data).encode('utf8'),
+        body=json.dumps(dict(data)).encode('utf8'),
         content_type='application/json',
     )
 
 
-if __name__ == '__main__':
-    app = web.Application()
+def create_app(loop=None):
+    if loop is None:
+        app = web.Application()
+    else:
+        app = web.Application(loop=loop)
     app.router.add_static('/images', settings.STORAGE_DIR)
     app.router.add_route('GET', '/', homepage)
     app.router.add_route('POST', '/save/', save)
+    return app
 
+
+if __name__ == '__main__':
+    app = create_app()
     aiohttp_jinja2.setup(
         app,
         loader=jinja2.FileSystemLoader(os.path.join(BASE_DIR, 'templates')),

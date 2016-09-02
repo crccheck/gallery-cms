@@ -1,6 +1,7 @@
 aiohttp
 aiohttp-jinja2
 pillow
+pytest
 
 pip-tools
 flake8
