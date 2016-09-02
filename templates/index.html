@@ -12,7 +12,7 @@
 </head>
 <body>
   {% for image in images %}
-    <form method="POST" onsubmit="return false;">
+    <form method="POST" action="/save/">
       <input type="hidden" name="src" value="{{ image.src }}">
       <img src="/images{{ image.src }}">
       {% for k, v in image.get_all_meta().items() %}
@@ -21,6 +21,7 @@
       {% for label, value in image.get_form_fields() %}
         <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
       {% endfor %}
+      <button>Save</button>
     </form>
   {% endfor %}
 </body>

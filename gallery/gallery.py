@@ -1,3 +1,4 @@
+import json
 import os.path
 from glob import glob
 from urllib.parse import quote
@@ -83,7 +84,6 @@ class Item():
         return ret
 
 
-
 @aiohttp_jinja2.template('index.html')
 async def homepage(request):
     # TODO get *.jpeg too
@@ -91,10 +91,21 @@ async def homepage(request):
     return {'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images)}
 
 
+async def save(request):
+    # TODO csrf
+    data = dict(await request.post())
+    return web.Response(
+        status=200,
+        body=json.dumps(data).encode('utf8'),
+        content_type='application/json',
+    )
+
+
 if __name__ == '__main__':
     app = web.Application()
     app.router.add_static('/images', settings.STORAGE_DIR)
     app.router.add_route('GET', '/', homepage)
+    app.router.add_route('POST', '/save/', save)
 
     aiohttp_jinja2.setup(
         app,
