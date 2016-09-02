@@ -16,7 +16,10 @@
       <input type="hidden" name="src" value="{{ image.src }}">
       <img src="/images{{ image.src }}">
       {% for k, v in image.get_all_meta().items() %}
-        <p><label>{{ k }}</label>: <input type="text" value="{{ v }}"></p>
+        <p><strong>{{ k }}</strong>: <code>{{ v }}</code></p>
+      {% endfor %}
+      {% for label, value in image.get_form_fields() %}
+        <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
       {% endfor %}
     </form>
   {% endfor %}

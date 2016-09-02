@@ -14,7 +14,11 @@ BASE_DIR = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
 
 
 class Item():
+    # IPTC values:
     # http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
+    # Based on:
+    # https://www.flickr.com/groups/51035612836@N01/discuss/72057594065133113/
+    # Useful tags are: Caption-Abstract, ObjectName == Headline, Keywords
     # TODO use some sort of model to validate these values
     NAME = {
         (2, 0): 'ApplicationRecordVersion',
@@ -34,6 +38,11 @@ class Item():
         (2, 115): 'Source',
         (2, 120): 'Caption-Abstract',
     }
+    FORM = (
+        'Headline',
+        'Caption-Abstract',
+        'Keywords',
+    )
 
     """A gallery item."""
     def __init__(self, path):
@@ -65,6 +74,14 @@ class Item():
     def get_all_meta(self):
         """Dict of meta tags were used in a human-readable format."""
         return {self.NAME.get(k, k): v for k, v in self.meta.items()}
+
+    def get_form_fields(self):
+        lookup = {v: k for k, v in self.NAME.items()}
+        ret = []
+        for field in self.FORM:
+            ret.append((field, self.meta.get(lookup[field], '')))
+        return ret
+
 
 
 @aiohttp_jinja2.template('index.html')
