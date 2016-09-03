@@ -4,7 +4,7 @@ $background: #b0e0e6;
 
 html {
   box-sizing: border-box;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 // https://css-tricks.com/box-sizing/
@@ -24,6 +24,7 @@ body {
 
 .thumb {
   background: lighten($background, 5%);
+  border-radius: 0.25em;
   margin: 0.25em;
   overflow: hidden;
   width: 200px;
@@ -47,6 +48,8 @@ body {
   }
 
   input {
+    background: transparent;
+    border: none;
     width: 100%;
   }
 

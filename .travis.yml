@@ -7,8 +7,8 @@ services:
 before_install:
   - docker build -t crccheck/gallery-cms .
 # Only package we need is for codecov.io
-install: pip install coverage
+install: pip install codecov
 script:
   - docker run --rm -v ${PWD}:/app:rw crccheck/gallery-cms make clean test
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
