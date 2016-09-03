@@ -6,6 +6,8 @@ before_install:
   - sudo apt-get install -y libboost-python-dev
   - sudo apt-get install -y libexiv2-dev
 install: "pip install -r requirements.txt"
+env:
+  - PYTHONPATH=$TRAVIS_BUILD_DIR/gallery
 script: pytest
 # Can't use container based because apt addon has a whitelist
 # https://github.com/travis-ci/apt-source-whitelist#source-approval-process
