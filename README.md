@@ -10,3 +10,7 @@ Requirements
 ------------
 
 make install
+
+Ubuntu packages:
+
+    apt-get install libexiv2-dev libboost-python-dev

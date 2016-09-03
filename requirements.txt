@@ -16,6 +16,7 @@ mccabe==0.5.2             # via flake8
 multidict==1.2.2          # via aiohttp
 pillow==3.3.1
 pip-tools==1.7.0
+py3exiv2==0.2.1
 py==1.4.31                # via pytest
 pycodestyle==2.0.0        # via flake8
 pyflakes==1.2.3           # via flake8
