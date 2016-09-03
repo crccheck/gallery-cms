@@ -10,6 +10,7 @@ import jinja2
 from aiohttp import web
 # from PIL import Image
 from pyexiv2 import ImageMetadata
+from natsort import natsorted
 
 # from gallery import settings
 import settings
@@ -103,7 +104,10 @@ class Item():
 @aiohttp_jinja2.template('index.html')
 async def homepage(request):
     # TODO get *.jpeg too
-    images = glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True)
+    images = natsorted(
+        glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True),
+        key=lambda x: x.upper(),
+    )
     return {'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images)}
 
 

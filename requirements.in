@@ -1,5 +1,6 @@
 aiohttp
 aiohttp-jinja2
+natsort
 pillow
 py3exiv2
 

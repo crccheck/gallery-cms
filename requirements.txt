@@ -15,6 +15,7 @@ jinja2==2.8               # via aiohttp-jinja2
 markupsafe==0.23          # via jinja2
 mccabe==0.5.2             # via flake8
 multidict==1.2.2          # via aiohttp
+natsort==5.0.1
 pillow==3.3.1
 pip-tools==1.7.0
 py3exiv2==0.2.1
