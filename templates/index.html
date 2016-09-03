@@ -13,7 +13,7 @@
         <input type="hidden" name="src" value="{{ image.src }}">
         <img src="/images{{ image.src }}" title="{{ image.src }}">
         <h4>
-          <input type="text" value="{{ image.src }}">
+          <input type="text" name="new_src" value="{{ image.src }}" required pattern="^/.+\.jpg$">
         </h4>
         {% for label, value in image.get_form_fields() %}
           <p><input type="text" name="{{ label }}" placeholder="{{ label }}"

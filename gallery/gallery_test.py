@@ -19,9 +19,12 @@ pytest_plugins = 'aiohttp.pytest_plugin'
 def jpeg(request):
     """Make a temp JPEG. Returns the path relative to FIXTURES_DIR."""
     def fin():
-        os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg'))
-        # XXX assumes SAVE_ORIGINALS == True
-        os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg.original'))
+        try:
+            os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg'))
+            # XXX assumes SAVE_ORIGINALS == True
+            os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg.original'))
+        except FileNotFoundError:
+            pass
 
     shutil.copyfile(os.path.join(FIXTURES_DIR, 'Lenna.jpg'),
                     os.path.join(FIXTURES_DIR, 'tmpLenna.jpg'))
@@ -54,3 +57,27 @@ async def test_handler_save(jpeg):
 
         # XXX assumes SAVE_ORIGINALS == True
         assert os.path.isfile(item.backup_abspath)
+
+
+async def test_handler_save_can_rename(jpeg):
+    async def post():
+        return MultiDict({
+            'src': jpeg,
+            'new_src': '/tmpDeleteme.jpg',
+        })
+
+    req = make_mocked_request('post', '/foo/')
+    req.post = post
+
+    with patch.object(settings, 'STORAGE_DIR', new=FIXTURES_DIR):
+        resp = await save(req)
+
+        assert resp.status == 200
+
+        item = Item('/tmpDeleteme.jpg')
+
+        assert os.path.isfile(item.abspath)
+        os.unlink(item.abspath)
+        # XXX assumes SAVE_ORIGINALS == True
+        assert os.path.isfile(item.backup_abspath)
+        os.unlink(item.backup_abspath)
