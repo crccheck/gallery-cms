@@ -1,6 +1,7 @@
 import json
 import logging
 import os.path
+import shutil
 from glob import glob
 from urllib.parse import quote
 
@@ -33,8 +34,8 @@ class Item():
     """A gallery item."""
     def __init__(self, path):
         self.path = path
-        abspath = settings.STORAGE_DIR + path  # why does os.path.join not work?
-        self.meta = ImageMetadata(abspath)
+        self.abspath = settings.STORAGE_DIR + path  # why does os.path.join not work?
+        self.meta = ImageMetadata(self.abspath)
         self.meta.read()
 
     def __str__(self):
@@ -44,6 +45,16 @@ class Item():
     def src(self):
         """Get the html 'src' attribute."""
         return quote(self.path)
+
+    @property
+    def backup_abspath(self):
+        """
+        The absolute path to where the backup for this image should go.
+
+        In the future we may a new setting so originals aren't cluttering the
+        storage directory.
+        """
+        return self.abspath + '.original'
 
     @property
     def keywords(self):
@@ -102,8 +113,11 @@ async def save(request):
 
     item = Item(data['src'])
     for field in item.FORM:
-        # TODO handle .repeatable
+        # TODO handle .repeatable (keywords)
         item.meta[field] = [data[field]]
+
+    if settings.SAVE_ORIGINALS and not os.path.isfile(item.backup_abspath):
+        shutil.copyfile(item.abspath, item.backup_abspath)
 
     item.meta.write()
 
@@ -112,6 +126,14 @@ async def save(request):
         body=json.dumps(item.get_form_fields()).encode('utf8'),
         content_type='application/json',
     )
+
+
+def check_settings(settings):
+    """
+    Raises exception if there's something wrong with the settings.
+    """
+    # TODO make sure STORAGE_DIR is writeable
+    return True
 
 
 def create_app(loop=None):
@@ -127,8 +149,8 @@ def create_app(loop=None):
 
 
 if __name__ == '__main__':
+    check_settings(settings)
     app = create_app()
-    print(BASE_DIR, os.path.join(BASE_DIR, 'templates'))
     aiohttp_jinja2.setup(
         app,
         loader=jinja2.FileSystemLoader(os.path.join(BASE_DIR, 'templates')),

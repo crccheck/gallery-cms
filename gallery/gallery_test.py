@@ -20,6 +20,8 @@ def jpeg(request):
     """Make a temp JPEG. Returns the path relative to FIXTURES_DIR."""
     def fin():
         os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg'))
+        # XXX assumes SAVE_ORIGINALS == True
+        os.unlink(os.path.join(FIXTURES_DIR, 'tmpLenna.jpg.original'))
 
     shutil.copyfile(os.path.join(FIXTURES_DIR, 'Lenna.jpg'),
                     os.path.join(FIXTURES_DIR, 'tmpLenna.jpg'))
@@ -49,3 +51,6 @@ async def test_handler_save(jpeg):
         item = Item(jpeg)
         assert item.meta['Iptc.Application2.Headline'].value == [headline]
         assert item.meta['Iptc.Application2.Caption'].value == [caption]
+
+        # XXX assumes SAVE_ORIGINALS == True
+        assert os.path.isfile(item.backup_abspath)
