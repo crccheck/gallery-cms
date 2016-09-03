@@ -4,7 +4,7 @@ $background: #b0e0e6;
 
 html {
   box-sizing: border-box;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 // https://css-tricks.com/box-sizing/
@@ -47,6 +47,8 @@ body {
   }
 
   input {
+    background: transparent;
+    border: none;
     width: 100%;
   }
 

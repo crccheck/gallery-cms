@@ -16,3 +16,15 @@ make install
 Ubuntu packages:
 
     apt-get install libexiv2-dev libboost-python-dev
+
+
+Dev workflow
+------------
+
+Auto reload in dev. Run in two terminal windows:
+
+    nodemon -w . --exec python gallery/gallery.py
+    grunt dev
+
+I've combined them into one window before, but the logging output becomes too
+hard to read.

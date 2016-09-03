@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 
 class Item():
+    """
+    An image in your storage.
+
+    Called `Item` to avoid clashing with PIL's `Image`.
+    """
     # IPTC values:
     #   http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
     # Based on:

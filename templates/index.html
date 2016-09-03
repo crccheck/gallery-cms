@@ -13,10 +13,11 @@
         <input type="hidden" name="src" value="{{ image.src }}">
         <img src="/images{{ image.src }}" title="{{ image.src }}">
         <h4>
-          {{ image.src }}
+          <input type="text" value="{{ image.src }}">
         </h4>
         {% for label, value in image.get_form_fields() %}
-          <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
+          <p><input type="text" name="{{ label }}" placeholder="{{ label }}"
+                    title="{{ label }}" value="{{ value }}"></label>
         {% endfor %}
         <button>Save</button>
       </form>
