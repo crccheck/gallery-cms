@@ -1,6 +1,11 @@
 aiohttp
 aiohttp-jinja2
 pillow
+py3exiv2
 
+# Test requirements
+pytest
+
+# Dev requirements
 pip-tools
 flake8

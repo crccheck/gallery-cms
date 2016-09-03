@@ -12,12 +12,17 @@
 </head>
 <body>
   {% for image in images %}
-    <div>
+    <form method="POST" action="/save/">
+      <input type="hidden" name="src" value="{{ image.src }}">
       <img src="/images{{ image.src }}">
       {% for k, v in image.get_all_meta().items() %}
-        <p>{{ k }}: {{ v }}</p>
+        <p><strong>{{ k }}</strong>: <code>{{ v }}</code></p>
       {% endfor %}
-    </div>
+      {% for label, value in image.get_form_fields() %}
+        <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
+      {% endfor %}
+      <button>Save</button>
+    </form>
   {% endfor %}
 </body>
 </html>
