@@ -123,13 +123,17 @@ async def save(request):
 
     # Update name
     new_src = data.get('new_src')
-    if new_src and new_src != data['src']:
-        # don't need to worry about html unquote
-        shutil.move(item.abspath, settings.STORAGE_DIR + new_src)
-        old_backup_abspath = item.backup_abspath
-        item = Item(new_src)
-        if os.path.isfile(old_backup_abspath):
-            shutil.move(old_backup_abspath, item.backup_abspath)
+    if new_src:
+        new_abspath = os.path.abspath(settings.STORAGE_DIR + new_src)
+        if not new_abspath.startswith(settings.STORAGE_DIR):
+            return web.Response(status=400, body=b'Invalid Request')
+
+        if new_abspath != item.abspath:
+            shutil.move(item.abspath, new_abspath)
+            old_backup_abspath = item.backup_abspath
+            item = Item(new_src)
+            if os.path.isfile(old_backup_abspath):
+                shutil.move(old_backup_abspath, item.backup_abspath)
 
     # Update meta
     for field in item.FORM:
