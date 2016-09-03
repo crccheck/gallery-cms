@@ -4,7 +4,7 @@ from unittest.mock import patch
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import save, settings
+from .gallery import save, settings, Item
 
 
 BASE_DIR = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
@@ -14,10 +14,10 @@ pytest_plugins = 'aiohttp.pytest_plugin'
 async def test_handler_save(test_client):
     async def post():
         return MultiDict({
-            'Headline': '',
-            'Caption-Abstract': '',
             'src': '/Lenna.jpg',
-            'Keywords': ''
+            'Iptc.Application2.Headline': 'headline',
+            'Iptc.Application2.Caption': 'caption',
+            'Iptc.Application2.Keywords': ''
         })
 
     req = make_mocked_request('post', '/foo/')
@@ -26,5 +26,7 @@ async def test_handler_save(test_client):
     with patch.object(settings, 'STORAGE_DIR', new=os.path.join(BASE_DIR, 'fixtures')):
         resp = await save(req)
 
-    print(resp.body)
-    1/0
+        assert resp.status == 200
+
+        item = Item('/Lenna.jpg')
+        assert item.meta['Iptc.Application2.Headline'].value == ['headline']

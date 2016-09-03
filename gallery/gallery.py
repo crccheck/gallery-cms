@@ -27,7 +27,7 @@ class Item():
     FORM = (
         'Iptc.Application2.Headline',
         'Iptc.Application2.Caption',
-        'Iptc.Application2.Keywords',
+        # 'Iptc.Application2.Keywords',  # TODO
     )
 
     """A gallery item."""
@@ -101,13 +101,15 @@ async def save(request):
     data = await request.post()
 
     item = Item(data['src'])
-    print('meta', item.get_all_meta())
-    # http://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html#jpeg
-    # im.save('test.jpg', 'JPEG', exif=exit)
+    for field in item.FORM:
+        # TODO handle .repeatable
+        item.meta[field] = [data[field]]
+
+    item.meta.write()
 
     return web.Response(
         status=200,
-        body=json.dumps(dict(data)).encode('utf8'),
+        body=json.dumps(item.get_form_fields()).encode('utf8'),
         content_type='application/json',
     )
 
