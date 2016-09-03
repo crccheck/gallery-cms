@@ -129,6 +129,12 @@ async def save(request):
             return web.Response(status=400, body=b'Invalid Request')
 
         if new_abspath != item.abspath:
+            if os.path.isfile(new_abspath):
+                return web.Response(
+                    status=400,
+                    body='{} Already Exists'.format(new_src).encode('utf8'),
+                )
+
             shutil.move(item.abspath, new_abspath)
             old_backup_abspath = item.backup_abspath
             item = Item(new_src)
@@ -150,6 +156,11 @@ async def save(request):
         status=200,
         body=json.dumps(item.get_form_fields()).encode('utf8'),
         content_type='application/json',
+        headers={
+            # Let fallback saves go back to the homepage w/o AJAX.
+            # `Refresh` is not an official HTTP header.
+            'Refresh': '1; url={}://{}/'.format(request.scheme, request.host),
+        },
     )
 
 

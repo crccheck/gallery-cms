@@ -97,3 +97,20 @@ async def test_handler_save_errors_with_invalid_name(jpeg):
         resp = await save(req)
 
         assert resp.status == 400
+        assert b'Invalid' in resp.body
+
+async def test_handler_save_errors_with_existing_name(jpeg):
+    async def post():
+        return MultiDict({
+            'src': jpeg,
+            'new_src': '/existing.jpg',
+        })
+
+    req = make_mocked_request('post', '/foo/')
+    req.post = post
+
+    with patch.object(settings, 'STORAGE_DIR', new=FIXTURES_DIR):
+        resp = await save(req)
+
+        assert resp.status == 400
+        assert b'Already Exists' in resp.body
