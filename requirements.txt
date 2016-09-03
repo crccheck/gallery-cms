@@ -6,12 +6,15 @@
 #
 aioauth-client==0.8.2
 aiohttp-jinja2==0.8.0
+aiohttp-session[aioredis]==0.5.0
 aiohttp==0.22.5
+aioredis==0.2.8           # via aiohttp-session
 chardet==2.3.0            # via aiohttp
 click==6.6                # via pip-tools
 coverage==4.2
 first==2.0.1              # via pip-tools
 flake8==3.0.4
+hiredis==0.2.0            # via aioredis
 jinja2==2.8               # via aiohttp-jinja2
 markupsafe==0.23          # via jinja2
 mccabe==0.5.2             # via flake8

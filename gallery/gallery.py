@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import os.path
@@ -6,9 +7,12 @@ from glob import glob
 from urllib.parse import quote
 
 import aiohttp_jinja2
+import aioredis
 import jinja2
 from aiohttp import web
 from aioauth_client import GoogleClient
+from aiohttp_session import setup as setup_session, get_session, session_middleware
+from aiohttp_session.redis_storage import RedisStorage
 # from PIL import Image
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
@@ -192,10 +196,7 @@ def check_settings(settings):
 
 
 def create_app(loop=None):
-    if loop is None:
-        app = web.Application()
-    else:
-        app = web.Application(loop=loop)
+    app = web.Application()
     app.router.add_static('/images', settings.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
@@ -204,9 +205,24 @@ def create_app(loop=None):
     return app
 
 
+async def connect_to_redis(loop):
+    redis_pool = await aioredis.create_pool(
+        ('localhost', 6379),
+        loop=loop)
+    return redis_pool
+
+
 if __name__ == '__main__':
     check_settings(settings)
     app = create_app()
+
+    loop = asyncio.get_event_loop()
+    redis_pool = loop.run_until_complete(connect_to_redis(loop))
+    setup_session(app, RedisStorage(
+        redis_pool,
+        cookie_name='gallery-cms-dev:1',
+    ))
+
     aiohttp_jinja2.setup(
         app,
         loader=jinja2.FileSystemLoader(os.path.join(BASE_DIR, 'templates')),
