@@ -9,9 +9,9 @@ from urllib.parse import quote
 import aiohttp_jinja2
 import aioredis
 import jinja2
-from aiohttp import web
 from aioauth_client import GoogleClient
-from aiohttp_session import setup as setup_session, get_session, session_middleware
+from aiohttp import web
+from aiohttp_session import setup as setup_session, get_session
 from aiohttp_session.redis_storage import RedisStorage
 # from PIL import Image
 from pyexiv2 import ImageMetadata
@@ -113,6 +113,8 @@ class Item():
 
 @aiohttp_jinja2.template('index.html')
 async def homepage(request):
+    session = await get_session(request)
+
     # TODO get *.jpeg too
     images = natsorted(
         glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True),
@@ -122,6 +124,8 @@ async def homepage(request):
 
 
 async def save(request):
+    session = await get_session(request)
+
     # TODO csrf
     data = await request.post()
     item = Item(data['src'])
@@ -171,6 +175,8 @@ async def save(request):
 
 
 async def login(request):
+    session = await get_session(request)
+
     client = GoogleClient(
         client_id=os.getenv('OAUTH_CLIENT_ID'),
         client_secret=os.getenv('OAUTH_CLIENT_SECRET'),
@@ -207,7 +213,7 @@ def create_app(loop=None):
 
 async def connect_to_redis(loop):
     redis_pool = await aioredis.create_pool(
-        ('localhost', 6379),
+        ('localhost', 6379),  # TODO
         loop=loop)
     return redis_pool
 
