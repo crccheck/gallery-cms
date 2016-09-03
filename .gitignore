@@ -1,6 +1,7 @@
 # Generated files
 *.pyc
 .cache/
+.coverage
 app/app.css
 node_modules/
 

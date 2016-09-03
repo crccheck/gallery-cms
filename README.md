@@ -1,7 +1,7 @@
 Gallery CMS
 ===========
 
-[![Build Status](https://travis-ci.org/crccheck/gallery-cms.svg?branch=master)](https://travis-ci.org/crccheck/gallery-cms)
+[![Build Status](https://travis-ci.org/crccheck/gallery-cms.svg?branch=master)](https://travis-ci.org/crccheck/gallery-cms) [![codecov](https://codecov.io/gh/crccheck/gallery-cms/branch/master/graph/badge.svg)](https://codecov.io/gh/crccheck/gallery-cms)
 
 A simple online gallery where the images are the database.
 

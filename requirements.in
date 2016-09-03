@@ -5,6 +5,8 @@ py3exiv2
 
 # Test requirements
 pytest
+coverage
+pytest-cov
 
 # Dev requirements
 pip-tools

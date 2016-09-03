@@ -7,7 +7,10 @@ install: ## Install requirements
 
 .PHONY: requirements.txt
 requirements.txt: ## Regenerate requirements.txt
-	pip-compile $< > $@
+	pip-compile > $@
+
+clean: ## Delete transient files
+	find . -type d -name "__pycache__" -exec rm -rf {} \;
 
 test: ## Run test suite
-	pytest
+	pytest --cov
