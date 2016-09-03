@@ -95,6 +95,10 @@ async def homepage(request):
 async def save(request):
     # TODO csrf
     data = await request.post()
+
+    item = Item(data['src'])
+    print('meta', item.get_all_meta())
+
     return web.Response(
         status=200,
         body=json.dumps(dict(data)).encode('utf8'),
