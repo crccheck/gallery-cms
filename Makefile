@@ -8,3 +8,6 @@ install: ## Install requirements
 .PHONY: requirements.txt
 requirements.txt: ## Regenerate requirements.txt
 	pip-compile $< > $@
+
+test: ## Run test suite
+	pytest
