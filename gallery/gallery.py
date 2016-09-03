@@ -120,11 +120,15 @@ async def homepage(request):
         glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True),
         key=lambda x: x.upper(),
     )
-    return {'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images)}
+
+    return {
+        'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images),
+        'is_authed': session.get('is_authed'),
+    }
 
 
 async def save(request):
-    session = await get_session(request)
+    # session = await get_session(request)
 
     # TODO csrf
     data = await request.post()
@@ -190,6 +194,8 @@ async def login(request):
     access_token, __ = await client.get_access_token(request.GET)
     user, info = await client.user_info()
     # TODO store in session storage
+
+    session['is_authed'] = True
     return web.HTTPFound('/')
 
 
