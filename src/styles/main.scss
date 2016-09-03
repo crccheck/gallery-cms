@@ -1,10 +1,59 @@
 @import 'normalize';
 
-body {
-  background: powderblue;
+$background: #b0e0e6;
+
+html {
+  box-sizing: border-box;
+  font-size: 15px;
 }
 
+// https://css-tricks.com/box-sizing/
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
-img {
+body {
+  background: $background;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.thumb {
+  background: lighten($background, 5%);
+  margin: 0.25em;
+  overflow: hidden;
   width: 200px;
+
+  img {
+    display: block;
+    width: 100%;
+  }
+
+  h4 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  label {
+    font-size: 0.8rem;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  button {
+    font-size: 0.8rem;
+    margin-top: 0.5em;
+    text-transform: lowercase;
+    width: 100%;
+  }
 }

@@ -7,18 +7,20 @@
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
-  {% for image in images %}
-    <form method="POST" action="/save/">
-      <input type="hidden" name="src" value="{{ image.src }}">
-      <img src="/images{{ image.src }}">
-      {% for k, v in image.get_all_meta().items() %}
-        <p><strong>{{ k }}</strong>: <code>{{ v }}</code></p>
-      {% endfor %}
-      {% for label, value in image.get_form_fields() %}
-        <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
-      {% endfor %}
-      <button>Save</button>
-    </form>
-  {% endfor %}
+  <div class="container">
+    {% for image in images %}
+      <form method="POST" action="/save/" class="thumb">
+        <input type="hidden" name="src" value="{{ image.src }}">
+        <img src="/images{{ image.src }}" title="{{ image.src }}">
+        <h4>
+          {{ image.src }}
+        </h4>
+        {% for label, value in image.get_form_fields() %}
+          <p><label>{{ label }}: <input type="text" name="{{ label }}" value="{{ value }}"></label></p>
+        {% endfor %}
+        <button>Save</button>
+      </form>
+    {% endfor %}
+</div>
 </body>
 </html>
