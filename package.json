@@ -1,0 +1,20 @@
+{
+  "name": "gallery-cms",
+  "version": "0.0.0",
+  "description": "",
+  "main": "",
+  "private": true,
+  "author": "Chris Chang <c@crccheck.com> (http://crccheck.com/blog)",
+  "engines": {
+    "node": ">=6.5.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.4.1",
+    "grunt": "^1.0.1",
+    "grunt-browser-sync": "^2.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-postcss": "^0.8.0",
+    "grunt-sass": "^1.0.0",
+    "normalize.sass": "^3.0.3-2"
+  }
+}
