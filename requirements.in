@@ -1,4 +1,5 @@
 aiohttp
+aioauth-client
 aiohttp-jinja2
 natsort
 pillow

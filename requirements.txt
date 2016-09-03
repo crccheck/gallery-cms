@@ -4,6 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+aioauth-client==0.8.2
 aiohttp-jinja2==0.8.0
 aiohttp==0.22.5
 chardet==2.3.0            # via aiohttp

@@ -8,6 +8,7 @@ from urllib.parse import quote
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
+from aioauth_client import GoogleClient
 # from PIL import Image
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
@@ -165,6 +166,23 @@ async def save(request):
     )
 
 
+async def login(request):
+    client = GoogleClient(
+        client_id=os.getenv('OAUTH_CLIENT_ID'),
+        client_secret=os.getenv('OAUTH_CLIENT_SECRET'),
+        scope='email profile',
+    )
+    client.params['redirect_uri'] = '{}://{}{}'.format(request.scheme, request.host, request.path)
+
+    if client.shared_key not in request.GET:  # 'code' not in request.GET
+        return web.HTTPFound(client.get_authorize_url())
+
+    access_token, __ = await client.get_access_token(request.GET)
+    user, info = await client.user_info()
+    # TODO store in session storage
+    return web.HTTPFound('/')
+
+
 def check_settings(settings):
     """
     Raises exception if there's something wrong with the settings.
@@ -182,6 +200,7 @@ def create_app(loop=None):
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
     app.router.add_route('POST', '/save/', save)
+    app.router.add_route('GET', '/login/', login)
     return app
 
 
