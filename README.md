@@ -24,9 +24,10 @@ Run `python gallery/gallery.py --help` to get started.
 
 ### Environment variables
 
-* `PORT`
+* `CIPHER_KEY` -- Control how thumbnail urls are generated
 * `OAUTH_CLIENT_ID`
 * `OAUTH_CLIENT_SECRET`
+* `PORT` -- Change what port the web server runs on
 
 
 Requirements
