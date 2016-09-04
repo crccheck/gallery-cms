@@ -49,7 +49,7 @@ Dev workflow
 
 Auto reload in dev. Run in two terminal windows:
 
-    nodemon -w . --exec python gallery/gallery.py
+    nodemon -w gallery -e py -x python gallery/gallery.py [options]
     grunt dev
 
 I've combined them into one window before, but the logging output becomes too

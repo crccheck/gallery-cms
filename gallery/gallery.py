@@ -55,8 +55,11 @@ class Item():
 
     @property
     def src(self):
-        """Get the html 'src' attribute."""
-        return quote(self.path)
+        """Get the html 'src' attributes."""
+        return {
+            'thumb': quote(self.path),
+            'original': quote(self.path),
+        }
 
     @property
     def backup_abspath(self):
