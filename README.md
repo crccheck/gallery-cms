@@ -5,7 +5,16 @@ Gallery CMS
 
 A simple online gallery where the images are the database.
 
-Use meta information from IPTC instead of a database.
+There are many programs and websites for managing your photos. But they all
+have a high level of [lock-in]. With Gallery CMS, all the data is stored using
+standard [IPTC] metadata instead of a database. If you bring your photos into
+another program/site, that data will go with it.
+
+With Gallery CMS, you'll be able to share a rich gallery with content on any
+Internet connected machine with a file system (see [Requirements]).
+
+  [lock-in]: https://en.wikipedia.org/wiki/Vendor_lock-in
+  [IPTC]: http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 
 
 Usage
@@ -23,11 +32,16 @@ Run `python gallery/gallery.py --help` to get started.
 Requirements
 ------------
 
-make install
+    make install
 
 Ubuntu packages:
 
     apt-get install libexiv2-dev libboost-python-dev
+
+Redis is also required for session storage persistence, but it would be easy to
+make this completely database free.
+
+Google Oauth2 app is required to accept logins and edits.
 
 
 Dev workflow
