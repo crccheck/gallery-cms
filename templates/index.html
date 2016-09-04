@@ -7,20 +7,20 @@
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
+  <nav>
+    {% if is_authed %}
+      <a href="/logout/">Logout</a>
+    {% else %}
+      <a href="/login/">Login</a>
+    {% endif %}
+  </nav>
   <div class="container">
     {% for image in images %}
-      <form method="POST" action="/save/" class="thumb">
-        <input type="hidden" name="src" value="{{ image.src }}">
-        <img src="/images{{ image.src }}" title="{{ image.src }}">
-        <h4>
-          <input type="text" name="new_src" value="{{ image.path }}" required pattern="^/.+\.jpg$">
-        </h4>
-        {% for label, value in image.get_form_fields() %}
-          <p><input type="text" name="{{ label }}" placeholder="{{ label }}"
-                    title="{{ label }}" value="{{ value }}"></label>
-        {% endfor %}
-        <button>Save</button>
-      </form>
+      {% if is_authed %}
+        {% include "item_form.html" %}
+      {% else %}
+        {% include "item.html" %}
+      {% endif %}
     {% endfor %}
   </div>
 </body>

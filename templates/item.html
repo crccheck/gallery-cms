@@ -1,0 +1,11 @@
+<div class="thumb">
+  <img src="/images{{ image.src }}" title="{{ image.src }}">
+  <h4>
+    {{ image.path }}
+  </h4>
+  {% for label, value in image.get_form_fields() %}
+    {% if value %}
+      <p title="{{ label }}">{{ value }}</p>
+    {% endif %}
+  {% endfor %}
+</div>
