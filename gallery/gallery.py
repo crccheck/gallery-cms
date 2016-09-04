@@ -199,6 +199,12 @@ async def login(request):
     return web.HTTPFound('/')
 
 
+async def logout(request):
+    session = await get_session(request)
+    session['is_authed'] = False
+    return web.HTTPFound('/')
+
+
 def check_settings(settings):
     """
     Raises exception if there's something wrong with the settings.
@@ -214,6 +220,7 @@ def create_app(loop=None):
     app.router.add_route('GET', '/', homepage)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
+    app.router.add_route('GET', '/logout/', logout)
     return app
 
 

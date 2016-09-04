@@ -6,7 +6,7 @@
   </h4>
   {% for label, value in image.get_form_fields() %}
     <p><input type="text" name="{{ label }}" placeholder="{{ label }}"
-              title="{{ label }}" value="{{ value }}"></label>
+              title="{{ label }}" value="{{ value }}"></label></p>
   {% endfor %}
   <button>Save</button>
 </form>

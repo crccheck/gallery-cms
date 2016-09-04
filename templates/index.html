@@ -9,7 +9,7 @@
 <body>
   <nav>
     {% if is_authed %}
-      <a href="#TODO">Logout</a>
+      <a href="/logout/">Logout</a>
     {% else %}
       <a href="/login/">Login</a>
     {% endif %}
@@ -19,7 +19,7 @@
       {% if is_authed %}
         {% include "item_form.html" %}
       {% else %}
-        {% include "item_form.html" %}
+        {% include "item.html" %}
       {% endif %}
     {% endfor %}
   </div>
