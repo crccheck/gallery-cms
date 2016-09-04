@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import json
 import logging
@@ -17,13 +18,13 @@ from aiohttp_session.redis_storage import RedisStorage
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
 
-# from gallery import settings
-import settings
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logger = logging.getLogger(__name__)
 
+
+# MODELS
+########
 
 class Item():
     """
@@ -45,7 +46,7 @@ class Item():
     """A gallery item."""
     def __init__(self, path):
         self.path = path
-        self.abspath = settings.STORAGE_DIR + path  # why does os.path.join not work?
+        self.abspath = args.STORAGE_DIR + path  # why does os.path.join not work?
         self.meta = ImageMetadata(self.abspath)
         self.meta.read()
 
@@ -67,14 +68,6 @@ class Item():
         """
         return self.abspath + '.original'
 
-    @property
-    def keywords(self):
-        return self.meta.get('Iptc.Application2.Keywords').value
-
-    @property
-    def headline(self):
-        return self.meta.get('Iptc.Application2.Headline').value
-
     def get_safe_value(self, meta, key):
         """
         Get the meta value or an empty string.
@@ -93,10 +86,6 @@ class Item():
             logger.warn('%s could not get meta for %s', self, key)
             return ''
 
-    def get_meta_used(self):
-        """List what meta tags were used in a human-readable format."""
-        return self.meta.iptc_keys
-
     def get_all_meta(self):
         """Dict of meta tags were used in a human-readable format."""
         return {key: self.get_safe_value(self.meta, key) for key in self.meta.iptc_keys}
@@ -111,18 +100,21 @@ class Item():
         return ret
 
 
+# HANDLERS/VIEWS
+################
+
 @aiohttp_jinja2.template('index.html')
 async def homepage(request):
     session = await get_session(request)
 
     # TODO get *.jpeg too
     images = natsorted(
-        glob(os.path.join(settings.STORAGE_DIR, '**/*.jpg'), recursive=True),
+        glob(os.path.join(args.STORAGE_DIR, '**/*.jpg'), recursive=True),
         key=lambda x: x.upper(),
     )
 
     return {
-        'images': (Item(x.replace(settings.STORAGE_DIR, '')) for x in images),
+        'images': (Item(x.replace(args.STORAGE_DIR, '')) for x in images),
         'is_authed': session.get('is_authed'),
     }
 
@@ -137,8 +129,8 @@ async def save(request):
     # Update name
     new_src = data.get('new_src')
     if new_src:
-        new_abspath = os.path.abspath(settings.STORAGE_DIR + new_src)
-        if not new_abspath.startswith(settings.STORAGE_DIR):
+        new_abspath = os.path.abspath(args.STORAGE_DIR + new_src)
+        if not new_abspath.startswith(args.STORAGE_DIR):
             return web.Response(status=400, body=b'Invalid Request')
 
         if new_abspath != item.abspath:
@@ -159,7 +151,7 @@ async def save(request):
         # TODO handle .repeatable (keywords)
         item.meta[field] = [data.get(field, '')]
 
-    if settings.SAVE_ORIGINALS and not os.path.isfile(item.backup_abspath):
+    if args.save_originals and not os.path.isfile(item.backup_abspath):
         shutil.copyfile(item.abspath, item.backup_abspath)
 
     # WISHLIST don't write() if nothing changed
@@ -195,8 +187,7 @@ async def login(request):
     user, info = await client.user_info()
     # TODO store in session storage
 
-    # FIXME actually make the setting an iterable instead of a giant string
-    if user.email in (settings.ADMIN_ACCOUNTS or []):
+    if user.email in args.admins:
         session['is_authed'] = True
     else:
         return web.HTTPForbidden()
@@ -210,17 +201,12 @@ async def logout(request):
     return web.HTTPFound('/')
 
 
-def check_settings(settings):
-    """
-    Raises exception if there's something wrong with the settings.
-    """
-    # TODO make sure STORAGE_DIR is writeable
-    return True
-
+# HELPERS
+#########
 
 def create_app(loop=None):
     app = web.Application()
-    app.router.add_static('/images', settings.STORAGE_DIR)
+    app.router.add_static('/images', args.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
     app.router.add_route('POST', '/save/', save)
@@ -236,8 +222,31 @@ async def connect_to_redis(loop):
     return redis_pool
 
 
+def dir_w_ok(user_dir):
+    user_dir = os.path.abspath(user_dir)
+
+    if not os.access(user_dir, os.W_OK):
+        raise argparse.ArgumentTypeError("Directory is not writeable")
+
+    return user_dir
+
+
 if __name__ == '__main__':
-    check_settings(settings)
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument(
+        '--port', type=int, default=os.environ.get('PORT', 8080),
+        help='Port to listen on [default: 8080]')
+    parser.add_argument(
+        '--no-save-originals', dest='save_originals', action='store_false',
+        help='Save original files [default: True]')
+    parser.add_argument(
+        'STORAGE_DIR', type=dir_w_ok,
+        help='Directory to serve images from')
+    parser.add_argument(
+        '--admin', metavar='EMAIL', action='append', dest='admins',
+        help='Google emails to give admin access')
+    args = parser.parse_args()
+
     app = create_app()
 
     loop = asyncio.get_event_loop()
@@ -251,4 +260,4 @@ if __name__ == '__main__':
         app,
         loader=jinja2.FileSystemLoader(os.path.join(BASE_DIR, 'templates')),
     )
-    web.run_app(app)
+    web.run_app(app, port=args.port)

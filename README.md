@@ -8,6 +8,18 @@ A simple online gallery where the images are the database.
 Use meta information from IPTC instead of a database.
 
 
+Usage
+-----
+
+Run `python gallery/gallery.py --help` to get started.
+
+### Environment variables
+
+* `PORT`
+* `OAUTH_CLIENT_ID`
+* `OAUTH_CLIENT_SECRET`
+
+
 Requirements
 ------------
 
