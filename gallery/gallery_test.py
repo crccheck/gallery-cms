@@ -59,7 +59,7 @@ async def test_item():
 
 
 async def test_handler_thumbs():
-    req = MagicMock(match_info={'image': '404.jpg'})
+    req = MagicMock(match_info={'dimensions': '200x200', 'image': '404.jpg'})
 
     with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
         resp = await thumbs(req)

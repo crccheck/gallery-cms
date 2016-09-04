@@ -64,7 +64,8 @@ class Item():
     @property
     def src(self):
         """Get the html 'src' attributes."""
-        thumb_path = '/thumbs' + self.path if self.filesize > 30000 else '/images' + self.path
+        thumb_path = '/thumbs/300x300' + self.path \
+            if self.filesize > 30000 else '/images' + self.path
         return {
             'thumb': quote(thumb_path),
             'original': quote('/images' + self.path),
@@ -135,13 +136,13 @@ async def homepage(request):
 
 async def thumbs(request):
     path = '/' + request.match_info['image']
-    thumb_dimension = 256, 256  # TODO extract this from the request
     abspath = args.STORAGE_DIR + path
     try:
         im = Image.open(abspath)
     except FileNotFoundError:
         return web.HTTPNotFound()
 
+    thumb_dimension = [int(x) for x in request.match_info['dimensions'].split('x')]
     im.thumbnail(thumb_dimension)
     bytes_file = BytesIO()
     im.save(bytes_file, 'jpeg')
@@ -247,7 +248,7 @@ def create_app(loop=None):
     app.router.add_static('/images', args.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
-    app.router.add_route('GET', '/thumbs/{image}', thumbs)
+    app.router.add_route('GET', '/thumbs/{dimensions}/{image}', thumbs)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
     app.router.add_route('GET', '/logout/', logout)
