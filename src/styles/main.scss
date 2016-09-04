@@ -1,6 +1,9 @@
 @import 'normalize';
 
-$background: #b0e0e6;
+$background: powderblue;
+$accent: royalblue;
+$text: #111;
+
 
 html {
   box-sizing: border-box;
@@ -15,22 +18,24 @@ html {
 
 body {
   background: $background;
+  color: $text;
 }
 
-nav {
-  background: royalblue;
-  border-bottom: 1px solid darken(royalblue, 20%);
-  color: #eee;
-  padding: 0.5em;
+a {
+  color: inherit;
+  text-decoration: none;
 
-  a {
-    color: inherit;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
   }
+}
+
+.navbar {
+  background: $accent;
+  border-bottom: 1px solid darken($accent, 20%);
+  color: #eee;
+  font-weight: bold;
+  padding: 0.5em;
 }
 
 .container {
@@ -53,6 +58,7 @@ nav {
 
   h4 {
     font-size: 1rem;
+    font-weight: 600;
     margin: 0;
   }
 
@@ -71,7 +77,7 @@ nav {
 
     &:focus {
       background: lighten($background, 10%);
-      border-bottom: 1px solid royalblue;
+      border-bottom: 1px solid $accent;
     }
   }
 
@@ -81,4 +87,13 @@ nav {
     text-transform: lowercase;
     width: 100%;
   }
+}
+
+footer {
+  border-top: 1px solid darken($background, 10%);
+  color: mix($background, $text, 25%);
+  font-family: serif;
+  font-size: 0.8rem;
+  margin-top: 2em;
+  padding: 0.5em 0.5em 0.25em;
 }

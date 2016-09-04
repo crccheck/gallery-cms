@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
-  <nav>
+  <nav class="navbar">
     {% if is_authed %}
       <a href="/logout/">Logout</a>
     {% else %}
@@ -23,5 +23,8 @@
       {% endif %}
     {% endfor %}
   </div>
+  <footer>
+    <a href="https://github.com/crccheck/gallery-cms">Gallery CMS is an open source project.</a>
+  </footer>
 </body>
 </html>
