@@ -10,11 +10,15 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.4.1",
+    "babel-preset-es2015-node6": "^0.3.0",
+    "babelify": "^7.3.0",
     "grunt": "^1.0.1",
     "grunt-browser-sync": "^2.2.0",
+    "grunt-browserify": "^5.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-postcss": "^0.8.0",
     "grunt-sass": "^1.0.0",
-    "normalize.sass": "^3.0.3-2"
+    "normalize.sass": "^3.0.3-2",
+    "standard": "^8.0.0"
   }
 }

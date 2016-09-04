@@ -16,8 +16,17 @@ module.exports = (grunt) ->
         ]
       dist:
         src: 'app/app.css'
+    browserify:
+      dist:
+        options:
+          transform: ['babelify']
+        files:
+          'app/app.js': ['src/scripts/main.js']
 
     watch:
+      scripts:
+        files: ['src/scripts/**/*.js']
+        tasks: ['browserify']
       style:
         files: ['src/styles/*.s?ss']
         # Skip postcss in dev YAGNI
@@ -26,16 +35,17 @@ module.exports = (grunt) ->
     browserSync:
       app:
         bsFiles:
-          src: ['app/*.css', 'templates/**/*.html']
+          src: ['app/*.*', 'templates/**/*.html']
         options:
           watchTask: true
           proxy: "localhost:8080"
 
   grunt.loadNpmTasks 'grunt-sass'
   grunt.loadNpmTasks 'grunt-postcss'
+  grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-browser-sync'
 
   grunt.registerTask 'default', ['build']
   grunt.registerTask 'dev', ['build', 'browserSync', 'watch']
-  grunt.registerTask 'build', ['sass', 'postcss']
+  grunt.registerTask 'build', ['sass', 'postcss', 'browserify']

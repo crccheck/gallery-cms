@@ -3,6 +3,7 @@
 .cache/
 .coverage
 app/app.css
+app/app.js
 node_modules/
 
 # Temporary files
