@@ -195,7 +195,12 @@ async def login(request):
     user, info = await client.user_info()
     # TODO store in session storage
 
-    session['is_authed'] = True
+    # FIXME actually make the setting an iterable instead of a giant string
+    if user.email in (settings.ADMIN_ACCOUNTS or []):
+        session['is_authed'] = True
+    else:
+        return web.HTTPForbidden()
+
     return web.HTTPFound('/')
 
 
