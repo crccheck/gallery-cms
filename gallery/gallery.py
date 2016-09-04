@@ -5,9 +5,10 @@ import binascii
 import json
 import logging
 import os
+import re
 import shutil
 from collections import namedtuple
-from glob import glob
+from glob import iglob
 from io import BytesIO
 from urllib.parse import quote
 
@@ -26,6 +27,7 @@ from natsort import natsorted
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CIPHER_KEY = os.getenv('CIPHER_KEY', 'roflcopter')
 logger = logging.getLogger(__name__)
+jpeg_matcher = re.compile(r'.+\.jpe?g$', re.IGNORECASE)
 
 
 # UTILS
@@ -154,10 +156,9 @@ class Item():
 @aiohttp_jinja2.template('index.html')
 async def homepage(request):
     session = await get_session(request)
-
-    # TODO get *.jpeg too
+    all_files = iglob(os.path.join(args.STORAGE_DIR, '**/*'), recursive=True)
     images = natsorted(
-        glob(os.path.join(args.STORAGE_DIR, '**/*.jpg'), recursive=True),
+        (x for x in all_files if jpeg_matcher.search(x)),
         key=lambda x: x.upper(),
     )
 
