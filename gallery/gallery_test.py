@@ -2,18 +2,30 @@ import argparse
 import os
 import random
 import shutil
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import save, Item, dir_w_ok
+from .gallery import save, login, Item, dir_w_ok
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(BASE_DIR, 'fixtures/')
 pytest_plugins = 'aiohttp.pytest_plugin'
+
+
+class AsyncMock(MagicMock):
+    """
+    MagicMock, but for async
+
+    Fixes "TypeError: object MagicMock can't be used in 'await' expression"
+
+    http://stackoverflow.com/questions/32480108/mocking-async-call-in-python-3-5/32498408#32498408
+    """
+    async def __call__(self, *args, **kwargs):
+        return super().__call__(*args, **kwargs)
 
 
 # FIXTURES
@@ -127,6 +139,16 @@ async def test_handler_save_errors_with_existing_name(jpeg):
 
         assert resp.status == 400
         assert b'Already Exists' in resp.body
+
+
+async def test_handler_login_redirects():
+    req = make_mocked_request('get', '/login/')
+
+    with patch('gallery.gallery.get_session', new=AsyncMock()):
+        resp = await login(req)
+
+    assert resp.status == 302
+    assert 'https://accounts.google.com/o/oauth2/auth' in resp.location
 
 
 async def test_dir_w_ok():

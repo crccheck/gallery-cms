@@ -116,6 +116,7 @@ async def homepage(request):
     return {
         'images': (Item(x.replace(args.STORAGE_DIR, '')) for x in images),
         'is_authed': session.get('is_authed'),
+        'session': session,
     }
 
 
@@ -189,6 +190,11 @@ async def login(request):
 
     if user.email in args.admins:
         session['is_authed'] = True
+        session['user'] = {
+            'name': info['displayName'],
+            'email': user.email,
+            'avatar': user.picture,
+        }
     else:
         return web.HTTPForbidden()
 

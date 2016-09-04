@@ -34,8 +34,20 @@ a {
   background: $accent;
   border-bottom: 1px solid darken($accent, 20%);
   color: #eee;
-  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
   padding: 0.5em;
+  a {
+    font-weight: bold;
+  }
+}
+
+.profile {
+  display: inline-block;
+  img {
+    border-radius: 2em;
+    height: 1em;
+  }
 }
 
 .container {

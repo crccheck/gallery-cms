@@ -9,6 +9,11 @@
 <body>
   <nav class="navbar">
     {% if is_authed %}
+      <div class="profile">
+        Logged in as
+        <span title="{{ session['user']['email'] }}">{{ session['user']['name'] }}</span>
+        <img src="{{ session['user']['avatar'] }}">
+      </div>
       <a href="/logout/">Logout</a>
     {% else %}
       <a href="/login/">Login</a>
