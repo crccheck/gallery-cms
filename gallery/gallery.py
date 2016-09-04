@@ -4,6 +4,7 @@ import json
 import logging
 import os.path
 import shutil
+from collections import namedtuple
 from glob import glob
 from urllib.parse import quote
 
@@ -14,7 +15,7 @@ from aioauth_client import GoogleClient
 from aiohttp import web
 from aiohttp_session import setup as setup_session, get_session
 from aiohttp_session.redis_storage import RedisStorage
-# from PIL import Image
+from PIL import Image
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
 
@@ -25,6 +26,9 @@ logger = logging.getLogger(__name__)
 
 # MODELS
 ########
+
+Dimensions = namedtuple('Dimensions', ['width', 'height'])
+
 
 class Item():
     """
@@ -49,6 +53,9 @@ class Item():
         self.abspath = args.STORAGE_DIR + path  # why does os.path.join not work?
         self.meta = ImageMetadata(self.abspath)
         self.meta.read()
+        im = Image.open(self.abspath)
+        self.dimensions = Dimensions(*im.size)
+        self.filesize = os.path.getsize(self.abspath)
 
     def __str__(self):
         return os.path.basename(self.path)
@@ -56,9 +63,10 @@ class Item():
     @property
     def src(self):
         """Get the html 'src' attributes."""
+        thumb_path = '/thumbs' + self.path if self.filesize > 30000 else '/images' + self.path
         return {
-            'thumb': quote(self.path),
-            'original': quote(self.path),
+            'thumb': quote(thumb_path),
+            'original': quote('/images' + self.path),
         }
 
     @property

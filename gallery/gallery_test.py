@@ -55,7 +55,7 @@ async def test_item():
         item = Item('/Lenna.jpg')
 
     assert str(item) == 'Lenna.jpg'
-    assert item.src == '/Lenna.jpg'
+    assert item.src['original'] == '/images/Lenna.jpg'
 
 
 async def test_handler_save(jpeg):

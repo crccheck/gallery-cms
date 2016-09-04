@@ -1,6 +1,6 @@
 <form method="POST" action="/save/" class="thumb">
   <input type="hidden" name="src" value="{{ image.src }}">
-  <img src="/images{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
+  <img src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
   <h4>
     <input type="text" name="new_src" value="{{ image.path }}" required pattern="^/.+\.jpg$">
   </h4>
