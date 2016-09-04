@@ -24,9 +24,10 @@ Run `python gallery/gallery.py --help` to get started.
 
 ### Environment variables
 
-* `PORT`
+* `CIPHER_KEY` -- Control how thumbnail urls are generated
 * `OAUTH_CLIENT_ID`
 * `OAUTH_CLIENT_SECRET`
+* `PORT` -- Change what port the web server runs on
 
 
 Requirements
@@ -49,8 +50,13 @@ Dev workflow
 
 Auto reload in dev. Run in two terminal windows:
 
-    nodemon -w . --exec python gallery/gallery.py
+    nodemon -w gallery -e py -x python gallery/gallery.py [options]
     grunt dev
 
 I've combined them into one window before, but the logging output becomes too
 hard to read.
+
+### Running tests in Docker
+
+    docker-compose build
+    docker-compos run --rm web make clean test

@@ -1,10 +1,14 @@
 import argparse
 import asyncio
+import base64
+import binascii
 import json
 import logging
-import os.path
+import os
 import shutil
+from collections import namedtuple
 from glob import glob
+from io import BytesIO
 from urllib.parse import quote
 
 import aiohttp_jinja2
@@ -14,17 +18,51 @@ from aioauth_client import GoogleClient
 from aiohttp import web
 from aiohttp_session import setup as setup_session, get_session
 from aiohttp_session.redis_storage import RedisStorage
-# from PIL import Image
+from PIL import Image
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CIPHER_KEY = os.getenv('CIPHER_KEY', 'roflcopter')
 logger = logging.getLogger(__name__)
+
+
+# UTILS
+#######
+
+def encode(key, string):
+    """
+    Vigenère cipher encode.
+
+    Just a simple obfuscation using only the standard lib.
+    http://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password/2490718#2490718
+    """
+    encoded_chars = []
+    for idx, char in enumerate(string):
+        key_c = key[idx % len(key)]
+        encoded_c = chr(ord(char) + ord(key_c) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = ''.join(encoded_chars)
+    return base64.urlsafe_b64encode(encoded_string.encode('utf8')).decode('utf8')
+
+
+def decode(key, string):
+    string = base64.urlsafe_b64decode(string).decode('utf8')
+    encoded_chars = []
+    for idx, char in enumerate(string):
+        key_c = key[idx % len(key)]
+        encoded_c = chr(ord(char) - ord(key_c) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = ''.join(encoded_chars)
+    return encoded_string
 
 
 # MODELS
 ########
+
+Dimensions = namedtuple('Dimensions', ['width', 'height'])
+
 
 class Item():
     """
@@ -49,14 +87,24 @@ class Item():
         self.abspath = args.STORAGE_DIR + path  # why does os.path.join not work?
         self.meta = ImageMetadata(self.abspath)
         self.meta.read()
+        im = Image.open(self.abspath)
+        self.dimensions = Dimensions(*im.size)
+        self.filesize = os.path.getsize(self.abspath)
 
     def __str__(self):
         return os.path.basename(self.path)
 
     @property
     def src(self):
-        """Get the html 'src' attribute."""
-        return quote(self.path)
+        """Get the html 'src' attributes."""
+        if self.filesize > 30000:
+            thumb_path = '/thumbs/' + encode(CIPHER_KEY, '300x300:' + self.path)
+        else:
+            thumb_path = '/images' + self.path
+        return {
+            'thumb': quote(thumb_path),
+            'original': quote('/images' + self.path),
+        }
 
     @property
     def backup_abspath(self):
@@ -119,6 +167,30 @@ async def homepage(request):
         'is_authed': session.get('is_authed'),
         'session': session,
     }
+
+
+async def thumbs(request):
+    encoded = request.match_info['encoded']
+    try:
+        w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 2)
+    except (binascii.Error, UnicodeDecodeError):
+        return web.HTTPNotFound()
+
+    abspath = args.STORAGE_DIR + path
+    try:
+        im = Image.open(abspath)
+    except (FileNotFoundError, IsADirectoryError):
+        return web.HTTPNotFound()
+
+    thumb_dimension = [int(x) for x in w_x_h.split('x')]
+    im.thumbnail(thumb_dimension)
+    bytes_file = BytesIO()
+    im.save(bytes_file, 'jpeg')
+    return web.Response(
+        status=200, body=bytes_file.getvalue(), content_type='image/jpeg',
+        headers={
+            'Cache-Control': 'max-age=86400',
+        })
 
 
 async def save(request):
@@ -216,6 +288,8 @@ def create_app(loop=None):
     app.router.add_static('/images', args.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
+    app.router.add_route('GET', '/thumbs/{encoded}', thumbs)
+    # app.router.add_route('GET', '/thumbs/{dimensions}/{image}', thumbs)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
     app.router.add_route('GET', '/logout/', logout)
