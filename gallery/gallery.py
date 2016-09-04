@@ -137,7 +137,11 @@ async def thumbs(request):
     path = '/' + request.match_info['image']
     thumb_dimension = 256, 256  # TODO extract this from the request
     abspath = args.STORAGE_DIR + path
-    im = Image.open(abspath)
+    try:
+        im = Image.open(abspath)
+    except FileNotFoundError:
+        return web.HTTPNotFound()
+
     im.thumbnail(thumb_dimension)
     bytes_file = BytesIO()
     im.save(bytes_file, 'jpeg')

@@ -8,7 +8,7 @@ import pytest
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import save, login, Item, dir_w_ok
+from .gallery import thumbs, save, login, Item, dir_w_ok
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -56,6 +56,15 @@ async def test_item():
 
     assert str(item) == 'Lenna.jpg'
     assert item.src['original'] == '/images/Lenna.jpg'
+
+
+async def test_handler_thumbs():
+    req = MagicMock(match_info={'image': '404.jpg'})
+
+    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+        resp = await thumbs(req)
+
+    assert resp.status == 404
 
 
 async def test_handler_save(jpeg):
