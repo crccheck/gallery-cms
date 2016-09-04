@@ -1,9 +1,10 @@
 import argparse
 import asyncio
 import base64
+import binascii
 import json
 import logging
-import os.path
+import os
 import shutil
 from collections import namedtuple
 from glob import glob
@@ -23,6 +24,7 @@ from natsort import natsorted
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CIPHER_KEY = os.getenv('CIPHER_KEY', 'roflcopter')
 logger = logging.getLogger(__name__)
 
 
@@ -95,8 +97,10 @@ class Item():
     @property
     def src(self):
         """Get the html 'src' attributes."""
-        thumb_path = '/thumbs/300x300' + self.path \
-            if self.filesize > 30000 else '/images' + self.path
+        if self.filesize > 30000:
+            thumb_path = '/thumbs/' + encode(CIPHER_KEY, '300x300:' + self.path)
+        else:
+            thumb_path = '/images' + self.path
         return {
             'thumb': quote(thumb_path),
             'original': quote('/images' + self.path),
@@ -166,14 +170,19 @@ async def homepage(request):
 
 
 async def thumbs(request):
-    path = '/' + request.match_info['image']
+    encoded = request.match_info['encoded']
+    try:
+        w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 2)
+    except (binascii.Error, UnicodeDecodeError):
+        return web.HTTPNotFound()
+
     abspath = args.STORAGE_DIR + path
     try:
         im = Image.open(abspath)
-    except FileNotFoundError:
+    except (FileNotFoundError, IsADirectoryError):
         return web.HTTPNotFound()
 
-    thumb_dimension = [int(x) for x in request.match_info['dimensions'].split('x')]
+    thumb_dimension = [int(x) for x in w_x_h.split('x')]
     im.thumbnail(thumb_dimension)
     bytes_file = BytesIO()
     im.save(bytes_file, 'jpeg')
@@ -279,7 +288,8 @@ def create_app(loop=None):
     app.router.add_static('/images', args.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
-    app.router.add_route('GET', '/thumbs/{dimensions}/{image}', thumbs)
+    app.router.add_route('GET', '/thumbs/{encoded}', thumbs)
+    # app.router.add_route('GET', '/thumbs/{dimensions}/{image}', thumbs)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
     app.router.add_route('GET', '/logout/', logout)

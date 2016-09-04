@@ -8,7 +8,7 @@ import pytest
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import encode, decode, thumbs, save, login, Item, dir_w_ok
+from .gallery import CIPHER_KEY, encode, decode, thumbs, save, login, Item, dir_w_ok
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -64,13 +64,32 @@ async def test_item():
     assert item.src['original'] == '/images/Lenna.jpg'
 
 
-async def test_handler_thumbs():
-    req = MagicMock(match_info={'dimensions': '200x200', 'image': '404.jpg'})
+async def test_handler_thumbs_404s_for_bad_requests():
+    req = MagicMock()
 
+    req.match_info = {'encoded': 'gibberish'}
+    resp = await thumbs(req)
+    assert resp.status == 404
+
+    # A directory instead of an image
+    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+        req.match_info = {'encoded': encode(CIPHER_KEY, '1x1:/')}
+        resp = await thumbs(req)
+    assert resp.status == 404
+
+    # Missing file
+    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+        req.match_info = {'encoded': encode(CIPHER_KEY, '1x1:/haha.jpg')}
+        resp = await thumbs(req)
+    assert resp.status == 404
+
+
+async def test_handler_thumbs_delivers_jpeg():
+    req = MagicMock(match_info={'encoded': encode(CIPHER_KEY, '1x1:/Lenna.jpg')})
     with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
         resp = await thumbs(req)
-
-    assert resp.status == 404
+    assert resp.status == 200
+    assert resp.headers['content-type'] == 'image/jpeg'
 
 
 async def test_handler_save(jpeg):
