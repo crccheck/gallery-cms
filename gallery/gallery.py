@@ -114,6 +114,7 @@ async def homepage(request):
     )
 
     return {
+        'title': os.path.basename(args.STORAGE_DIR) or 'Gallery CMS',
         'images': (Item(x.replace(args.STORAGE_DIR, '')) for x in images),
         'is_authed': session.get('is_authed'),
         'session': session,

@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>Gallery CMS</title>
+  <title>{{ title }}</title>
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
   <nav class="navbar">
+    <h1>{{ title }}</h1>
     {% if is_authed %}
       <div class="profile">
         Logged in as
         <span title="{{ session['user']['email'] }}">{{ session['user']['name'] }}</span>
         <img src="{{ session['user']['avatar'] }}">
+        <a href="/logout/">Logout</a>
       </div>
-      <a href="/logout/">Logout</a>
     {% else %}
       <a href="/login/">Login</a>
     {% endif %}
