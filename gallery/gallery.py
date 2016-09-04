@@ -6,6 +6,7 @@ import os.path
 import shutil
 from collections import namedtuple
 from glob import glob
+from io import BytesIO
 from urllib.parse import quote
 
 import aiohttp_jinja2
@@ -132,6 +133,21 @@ async def homepage(request):
     }
 
 
+async def thumbs(request):
+    path = '/' + request.match_info['image']
+    thumb_dimension = 256, 256  # TODO extract this from the request
+    abspath = args.STORAGE_DIR + path
+    im = Image.open(abspath)
+    im.thumbnail(thumb_dimension)
+    bytes_file = BytesIO()
+    im.save(bytes_file, 'jpeg')
+    return web.Response(
+        status=200, body=bytes_file.getvalue(), content_type='image/jpeg',
+        headers={
+            'Cache-Control': 'max-age=86400',
+        })
+
+
 async def save(request):
     # session = await get_session(request)
 
@@ -227,6 +243,7 @@ def create_app(loop=None):
     app.router.add_static('/images', args.STORAGE_DIR)
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
+    app.router.add_route('GET', '/thumbs/{image}', thumbs)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
     app.router.add_route('GET', '/logout/', logout)
