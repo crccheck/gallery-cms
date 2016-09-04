@@ -1,0 +1,9 @@
+  <img src="/images{{ image.src }}" title="{{ image.src }}">
+  <h4>
+    <input type="text" name="new_src" value="{{ image.path }}" required pattern="^/.+\.jpg$">
+  </h4>
+  {% for label, value in image.get_form_fields() %}
+    <p><input type="text" name="{{ label }}" placeholder="{{ label }}"
+              title="{{ label }}" value="{{ value }}"></label>
+  {% endfor %}
+  <button>Save</button>
