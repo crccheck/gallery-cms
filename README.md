@@ -54,3 +54,8 @@ Auto reload in dev. Run in two terminal windows:
 
 I've combined them into one window before, but the logging output becomes too
 hard to read.
+
+### Running tests in Docker
+
+    docker-compose build
+    docker-compos run --rm web make clean test
