@@ -8,7 +8,7 @@ import pytest
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import thumbs, save, login, Item, dir_w_ok
+from .gallery import encode, decode, thumbs, save, login, Item, dir_w_ok
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,6 +49,12 @@ def jpeg(request):
 
 # TESTS
 #######
+
+def test_encode_decode():
+    encoded = encode('key', 'metal idol')
+    assert encoded == 'w5jDisOtw4zDkcKZw5TDicOow5c='
+    assert decode('key', encoded) == 'metal idol'
+
 
 async def test_item():
     with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):

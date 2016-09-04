@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import base64
 import json
 import logging
 import os.path
@@ -23,6 +24,36 @@ from natsort import natsorted
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logger = logging.getLogger(__name__)
+
+
+# UTILS
+#######
+
+def encode(key, string):
+    """
+    Vigenère cipher encode.
+
+    Just a simple obfuscation using only the standard lib.
+    http://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password/2490718#2490718
+    """
+    encoded_chars = []
+    for idx, char in enumerate(string):
+        key_c = key[idx % len(key)]
+        encoded_c = chr(ord(char) + ord(key_c) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = ''.join(encoded_chars)
+    return base64.urlsafe_b64encode(encoded_string.encode('utf8')).decode('utf8')
+
+
+def decode(key, string):
+    string = base64.urlsafe_b64decode(string).decode('utf8')
+    encoded_chars = []
+    for idx, char in enumerate(string):
+        key_c = key[idx % len(key)]
+        encoded_c = chr(ord(char) - ord(key_c) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = ''.join(encoded_chars)
+    return encoded_string
 
 
 # MODELS
