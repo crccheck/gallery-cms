@@ -1,4 +1,6 @@
-__pycache__
-*.pyc
+.coverage
+.env
 .git
+**/*.pyc
+**/__pycache__
 node_modules

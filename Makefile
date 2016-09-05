@@ -14,3 +14,9 @@ clean: ## Delete transient files
 
 test: ## Run test suite
 	pytest --cov
+
+docker/release: ## Build and push a new release to Docker Hub
+	grunt build
+	docker-compose build
+	docker tag gallerycms_web crccheck/gallery-cms
+	docker push crccheck/gallery-cms

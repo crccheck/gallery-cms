@@ -8,7 +8,11 @@ import pytest
 from aiohttp.test_utils import make_mocked_request
 from multidict import MultiDict
 
-from .gallery import CIPHER_KEY, encode, decode, thumbs, save, login, Item, dir_w_ok
+from .gallery import (
+    CIPHER_KEY,
+    encode, decode, thumbs, save, login, Item,
+    get_redis_info, dir_w_ok,
+)
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -183,6 +187,12 @@ async def test_handler_login_redirects():
 
     assert resp.status == 302
     assert 'https://accounts.google.com/o/oauth2/auth' in resp.location
+
+
+def test_get_redis_info():
+    assert get_redis_info('redis://localhost:6379') == ('localhost', 6379)
+    assert get_redis_info('redis://redis:999') == ('redis', 999)
+    assert get_redis_info('redis://redis') == ('redis', 6379)
 
 
 async def test_dir_w_ok():

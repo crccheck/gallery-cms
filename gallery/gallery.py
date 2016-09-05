@@ -297,10 +297,15 @@ def create_app(loop=None):
     return app
 
 
+def get_redis_info(url):
+    match = re.match(r'redis://(?P<host>[^:]+)(:(?P<port>\d+))?', url)
+    data = match.groupdict()
+    return data['host'], int(data['port'] or 6379)
+
+
 async def connect_to_redis(loop):
-    redis_pool = await aioredis.create_pool(
-        ('localhost', 6379),  # TODO
-        loop=loop)
+    redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+    redis_pool = await aioredis.create_pool(get_redis_info(redis_url), loop=loop)
     return redis_pool
 
 

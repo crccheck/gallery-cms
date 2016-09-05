@@ -11,4 +11,5 @@ RUN pip install -r requirements.txt
 # Install app
 COPY . /app
 
-ENV PYTHONPATH /app/gallery
+ENV PORT 8080
+EXPOSE 8080

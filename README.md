@@ -28,6 +28,7 @@ Run `python gallery/gallery.py --help` to get started.
 * `OAUTH_CLIENT_ID`
 * `OAUTH_CLIENT_SECRET`
 * `PORT` -- Change what port the web server runs on
+* `REDIS_URL` -- Connection url to Redis
 
 
 Requirements
@@ -59,4 +60,4 @@ hard to read.
 ### Running tests in Docker
 
     docker-compose build
-    docker-compos run --rm web make clean test
+    docker-compose run --rm web make test
