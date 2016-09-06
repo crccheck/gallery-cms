@@ -23,6 +23,7 @@
   </nav>
   <div class="container">
     {% for image in images %}
+      {% set loop_index = loop.index %}
       {% if is_authed %}
         {% include "item_form.html" %}
       {% else %}

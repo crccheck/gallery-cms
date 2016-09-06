@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import 'select2'
+import 'lazysizes'
 
 // FIXME this causes the browser to freeze because there are so many elements
 $('form.thumb').one('click', (evt) => {

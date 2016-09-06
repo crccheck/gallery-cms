@@ -19,6 +19,7 @@
     "grunt-postcss": "^0.8.0",
     "grunt-sass": "^1.0.0",
     "jquery": "^3.1.0",
+    "lazysizes": "^2.0.2",
     "normalize.sass": "^3.0.3-2",
     "select2": "^4.0.3",
     "standard": "^8.0.0"

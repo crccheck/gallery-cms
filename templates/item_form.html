@@ -1,6 +1,6 @@
 <form method="POST" action="/save/" class="thumb">
   <input type="hidden" name="src" value="{{ image.path }}">
-  <img src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
+  <img {% if loop_index > 30 %}class=lazyload data-{% endif %}src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
   <h4>
     <input type="text" name="new_src" value="{{ image.path }}" required pattern="^/.+\.[jJ][pP][eE]?[gG]$">
   </h4>
