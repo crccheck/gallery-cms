@@ -12,9 +12,9 @@
     <p title="Caption">{{ form['Iptc.Application2.Caption'] }}</p>
   {% endif %}
   {% if form['Iptc.Application2.Keywords'] %}
-    <ul>
+    <ul class="keyword-container">
       {% for keyword in form['Iptc.Application2.Keywords'] %}
-        <li>{{ keyword }}</li>
+        <li class="keyword">{{ keyword }}</li>
       {% endfor %}
     </ul>
   {% endif %}

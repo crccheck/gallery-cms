@@ -105,12 +105,12 @@ a {
     margin-right: 0.25em;
   }
 
-  ul {
+  .keyword-container {
     padding: 0;
     list-style: none;
   }
 
-  li {
+  .keyword {
     background: $accent;
     border-radius: 0.25em;
     color: #eee;
