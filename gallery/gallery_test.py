@@ -66,6 +66,7 @@ async def test_item():
 
     assert str(item) == 'Lenna.jpg'
     assert item.src['original'] == '/images/Lenna.jpg'
+    assert item.get_safe_value('nonexistent tag') == ''
 
 
 async def test_handler_thumbs_404s_for_bad_requests():
@@ -105,6 +106,7 @@ async def test_handler_save(jpeg):
             'src': jpeg,
             'Iptc.Application2.Headline': headline,
             'Iptc.Application2.Caption': caption,
+            'Iptc.Application2.Keywords': 'test keyword',
         })
 
     req = make_mocked_request('post', '/foo/')
@@ -118,6 +120,7 @@ async def test_handler_save(jpeg):
         item = Item(jpeg)
         assert item.meta['Iptc.Application2.Headline'].value == [headline]
         assert item.meta['Iptc.Application2.Caption'].value == [caption]
+        assert item.meta['Iptc.Application2.Keywords'].value == ['test keyword']
 
         assert os.path.isfile(item.backup_abspath)
 

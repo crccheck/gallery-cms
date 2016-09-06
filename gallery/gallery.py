@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import argparse
 import asyncio
 import base64
@@ -77,11 +78,6 @@ class Item():
     # Based on:
     #   https://www.flickr.com/groups/51035612836@N01/discuss/72057594065133113/
     # Useful tags are: Caption-Abstract, ObjectName == Headline, Keywords
-    FORM = (
-        'Iptc.Application2.Headline',
-        'Iptc.Application2.Caption',
-        # 'Iptc.Application2.Keywords',  # TODO
-    )
 
     """A gallery item."""
     def __init__(self, path):
@@ -99,12 +95,8 @@ class Item():
     @property
     def src(self):
         """Get the html 'src' attributes."""
-        if self.filesize > 30000:
-            thumb_path = '/thumbs/' + encode(CIPHER_KEY, '300x300:' + self.path)
-        else:
-            thumb_path = '/images' + self.path
         return {
-            'thumb': quote(thumb_path),
+            'thumb': quote('/thumbs/' + encode(CIPHER_KEY, '300x300:' + self.path)),
             'original': quote('/images' + self.path),
         }
 
@@ -118,7 +110,7 @@ class Item():
         """
         return self.abspath + '.original'
 
-    def get_safe_value(self, meta, key):
+    def get_safe_value(self, key):
         """
         Get the meta value or an empty string.
 
@@ -126,27 +118,24 @@ class Item():
         http://python3-exiv2.readthedocs.io/en/latest/tutorial.html
         """
         try:
-            val = meta[key].value
-            if meta[key].repeatable:
+            val = self.meta[key].value
+            if self.meta[key].repeatable:
                 return val
 
             return val[0]
 
-        except UnicodeDecodeError:
-            logger.warn('%s could not get meta for %s', self, key)
+        except KeyError:
             return ''
 
-    def get_all_meta(self):
-        """Dict of meta tags were used in a human-readable format."""
-        return {key: self.get_safe_value(self.meta, key) for key in self.meta.iptc_keys}
-
     def get_form_fields(self):
-        ret = []
-        for field in self.FORM:
-            if field in self.meta.iptc_keys:
-                ret.append((field, self.get_safe_value(self.meta, field)))
-            else:
-                ret.append((field, ''))
+        ret = {
+            'Iptc.Application2.Headline':
+                self.get_safe_value('Iptc.Application2.Headline'),
+            'Iptc.Application2.Caption':
+                self.get_safe_value('Iptc.Application2.Caption'),
+            'Iptc.Application2.Keywords':
+                self.get_safe_value('Iptc.Application2.Keywords'),
+        }
         return ret
 
 
@@ -222,13 +211,13 @@ async def save(request):
                 shutil.move(old_backup_abspath, item.backup_abspath)
 
     # Update meta
-    for field in item.FORM:
-        # TODO handle .repeatable (keywords)
-        item.meta[field] = [data.get(field, '')]
+    # XXX Must be kept up to date with Item.get_form_fields
+    item.meta['Iptc.Application2.Headline'] = [data.get('Iptc.Application2.Headline', '')]
+    item.meta['Iptc.Application2.Caption'] = [data.get('Iptc.Application2.Caption', '')]
+    item.meta['Iptc.Application2.Keywords'] = data.getall('Iptc.Application2.Keywords', [])
 
     if args.save_originals and not os.path.isfile(item.backup_abspath):
         shutil.copyfile(item.abspath, item.backup_abspath)
-
     # WISHLIST don't write() if nothing changed
     item.meta.write()
 

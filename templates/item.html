@@ -3,9 +3,18 @@
   <h4>
     {{ image.path }}
   </h4>
-  {% for label, value in image.get_form_fields() %}
-    {% if value %}
-      <p title="{{ label }}">{{ value }}</p>
-    {% endif %}
-  {% endfor %}
+  {% set form = image.get_form_fields() %}
+  {% if form['Iptc.Application2.Headline'] %}
+    <p title="Headline">{{ form['Iptc.Application2.Headline'] }}</p>
+  {% endif %}
+  {% if form['Iptc.Application2.Caption'] %}
+    <p title="Caption">{{ form['Iptc.Application2.Caption'] }}</p>
+  {% endif %}
+  {% if form['Iptc.Application2.Keywords'] %}
+    <ul>
+      {% for keyword in form['Iptc.Application2.Keywords'] %}
+        <li>{{ keyword }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 </div>

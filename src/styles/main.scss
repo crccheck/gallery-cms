@@ -1,4 +1,4 @@
-@import 'normalize';
+@import 'normalize.sass/normalize';
 
 $background: powderblue;
 $accent: royalblue;
@@ -95,6 +95,29 @@ a {
       background: lighten($background, 10%);
       border-bottom: 1px solid $accent;
     }
+  }
+
+  select {
+    width: 100%;
+  }
+  option {
+    display: inline;
+    margin-right: 0.25em;
+  }
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    background: $accent;
+    border-radius: 0.25em;
+    color: #eee;
+    display: inline-block;
+    font-size: 0.75em;
+    padding: 0.2em;
+    margin-bottom: 0.2em;
   }
 
   button {
