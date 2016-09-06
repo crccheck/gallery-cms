@@ -1,5 +1,4 @@
 <div class="thumb">
-  <img src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
   <img {% if loop_index > 30 %}class=lazyload data-{% endif %}src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
   <h4>
     {{ image.path }}
