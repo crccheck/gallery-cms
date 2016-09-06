@@ -13,6 +13,9 @@ another program/site, that data will go with it.
 With Gallery CMS, you'll be able to share a rich gallery with content on any
 Internet connected machine with a file system (see [Requirements]).
 
+This is *not a replacement* for a media manager. It's designed for small
+tweaks; things like mass-tagging and naming should be done elsewhere.
+
   [lock-in]: https://en.wikipedia.org/wiki/Vendor_lock-in
   [IPTC]: http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 

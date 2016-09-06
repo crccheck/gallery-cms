@@ -46,6 +46,31 @@ a {
   }
 }
 
+.nav-keywords {
+  ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
+  li {
+    background: $accent;
+    border-radius: 0.25em;
+    color: #eee;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.75em;
+    margin-bottom: 0.2em;
+    margin-right: 0.2em;
+    padding: 0.2em;
+
+    &.active {
+      background: lighten($accent, 8%);
+      color: lighten(#eee, 10%);
+      font-weight: bold;
+    }
+  }
+}
+
 .profile {
   display: inline-block;
   img {
@@ -65,6 +90,7 @@ a {
   border-radius: 0.25em;
   margin: 0.25em;
   overflow: hidden;
+  transition: margin 200ms width 200ms;
   width: 200px;
 
   img {
@@ -126,6 +152,12 @@ a {
     text-transform: lowercase;
     width: 100%;
   }
+}
+
+.thumb-hide {
+  margin-left: 0;
+  margin-right: 0;
+  width: 0;
 }
 
 footer {

@@ -242,6 +242,7 @@ async def login(request):
         client_secret=os.getenv('OAUTH_CLIENT_SECRET'),
         scope='email profile',
     )
+    # FIXME not picking up https
     client.params['redirect_uri'] = '{}://{}{}'.format(request.scheme, request.host, request.path)
 
     if client.shared_key not in request.GET:  # 'code' not in request.GET
