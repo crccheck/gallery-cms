@@ -89,6 +89,7 @@ a {
   background: lighten($background, 5%);
   border-radius: 0.25em;
   flex-basis: 200px;
+  margin-bottom: 0.5em;
   overflow: hidden;
 
   @media (max-width: 600px) {
@@ -135,8 +136,9 @@ a {
   }
 
   .keyword-container {
-    padding: 0;
     list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .keyword {

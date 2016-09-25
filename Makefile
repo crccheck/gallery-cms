@@ -10,7 +10,7 @@ requirements.txt: ## Regenerate requirements.txt
 	pip-compile > $@
 
 clean: ## Delete transient files
-	find . -type d -name "__pycache__" -exec rm -rf {} \;
+	-find . -type d -name "__pycache__" -exec rm -rf {} \;
 
 test: ## Run test suite
 	pytest --cov
@@ -20,3 +20,7 @@ docker/release: ## Build and push a new release to Docker Hub
 	docker-compose build
 	docker tag gallerycms_web crccheck/gallery-cms
 	docker push crccheck/gallery-cms
+
+docker/test: clean
+	docker-compose build
+	docker-compose run web make test

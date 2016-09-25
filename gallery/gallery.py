@@ -24,6 +24,8 @@ from PIL import Image
 from pyexiv2 import ImageMetadata
 from natsort import natsorted
 
+from crop import crop_1
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CIPHER_KEY = os.getenv('CIPHER_KEY', 'roflcopter')
@@ -96,7 +98,7 @@ class Item():
     def src(self):
         """Get the html 'src' attributes."""
         return {
-            'thumb': quote('/thumbs/' + encode(CIPHER_KEY, '300x300:' + self.path)),
+            'thumb': quote('/thumbs/' + encode(CIPHER_KEY, 'v1:300x300:' + self.path)),
             'original': quote('/images' + self.path),
         }
 
@@ -159,11 +161,11 @@ async def homepage(request):
     }
 
 
-async def thumbs(request):
+async def thumbs(request, crop=True):
     encoded = request.match_info['encoded']
     try:
-        w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 2)
-    except (binascii.Error, UnicodeDecodeError):
+        __, w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 3)
+    except (binascii.Error, UnicodeDecodeError, ValueError):
         return web.HTTPNotFound()
 
     abspath = args.STORAGE_DIR + path
@@ -173,9 +175,16 @@ async def thumbs(request):
         return web.HTTPNotFound()
 
     thumb_dimension = [int(x) for x in w_x_h.split('x')]
-    im.thumbnail(thumb_dimension)
     bytes_file = BytesIO()
-    im.save(bytes_file, 'jpeg')
+
+    if crop:
+        cropped_im = crop_1(im)
+        cropped_im.thumbnail(thumb_dimension)
+        cropped_im.save(bytes_file, 'jpeg')
+    else:
+        im.thumbnail(thumb_dimension)
+        im.save(bytes_file, 'jpeg')
+
     return web.Response(
         status=200, body=bytes_file.getvalue(), content_type='image/jpeg',
         headers={

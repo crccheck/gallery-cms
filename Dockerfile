@@ -11,5 +11,7 @@ RUN pip install -r requirements.txt
 # Install app
 COPY . /app
 
+# HACK to get the test suite to not complain about imports
+ENV PYTHONPATH /app/gallery
 ENV PORT 8080
 EXPOSE 8080

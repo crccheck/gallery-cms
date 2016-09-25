@@ -90,7 +90,7 @@ async def test_handler_thumbs_404s_for_bad_requests():
 
 
 async def test_handler_thumbs_delivers_jpeg():
-    req = MagicMock(match_info={'encoded': encode(CIPHER_KEY, '1x1:/Lenna.jpg')})
+    req = MagicMock(match_info={'encoded': encode(CIPHER_KEY, 'v1:1x1:/Lenna.jpg')})
     with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
         resp = await thumbs(req)
     assert resp.status == 200
