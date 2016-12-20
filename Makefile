@@ -12,6 +12,13 @@ requirements.txt: ## Regenerate requirements.txt
 clean: ## Delete transient files
 	-find . -type d -name "__pycache__" -exec rm -rf {} \;
 
+build: ## Build assets
+	grunt build
+
+dev:
+	# grunt dev
+	nodemon --ext py -x python gallery/gallery.py ~/Sync/Photos/buttons --admin ${ADMIN_EMAIL} --no-save-originals
+
 test: ## Run test suite
 	pytest --cov
 
