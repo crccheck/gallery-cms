@@ -40,6 +40,7 @@ def encode(key, string):
     """
     Vigenère cipher encode.
 
+    Makes sure the url is safe.
     Just a simple obfuscation using only the standard lib.
     http://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password/2490718#2490718
     """
@@ -148,14 +149,16 @@ class Item():
 async def homepage(request):
     session = await get_session(request)
     all_files = iglob(os.path.join(args.STORAGE_DIR, '**/*'), recursive=True)
-    images = natsorted(
-        (x for x in all_files if jpeg_matcher.search(x)),
-        key=lambda x: x.upper(),
+    all_jpegs = (x for x in all_files if jpeg_matcher.search(x))
+    all_items = (Item(x.replace(args.STORAGE_DIR, '')) for x in all_jpegs)
+    all_images = natsorted(
+        all_items,
+        key=lambda x: (x.get_safe_value('Iptc.Application2.Headline') or str(x)).upper(),
     )
 
     return {
         'title': os.path.basename(args.STORAGE_DIR) or 'Gallery CMS',
-        'images': (Item(x.replace(args.STORAGE_DIR, '')) for x in images),
+        'images': all_images,
         'is_authed': session.get('is_authed'),
         'session': session,
     }
