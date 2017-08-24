@@ -5,6 +5,7 @@ import base64
 import binascii
 import json
 import logging
+import logging.config
 import os
 import re
 import shutil
@@ -29,8 +30,37 @@ from crop import crop_1
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CIPHER_KEY = os.getenv('CIPHER_KEY', 'roflcopter')
-logger = logging.getLogger(__name__)
 jpeg_matcher = re.compile(r'.+\.jpe?g$', re.IGNORECASE)
+logger = logging.getLogger(__name__)
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': os.getenv('LOGGING_LEVEL', 'DEBUG'),
+            'class': 'project_runpy.ColorizingStreamHandler',
+            'formatter': 'main',
+        },
+    },
+    'formatters': {
+        'main': {
+            # Docs:
+            # https://docs.python.org/3/library/logging.html#logrecord-attributes
+            'format': '[%(name)s] %(message)s',
+        },
+    },
+    'loggers': {
+        '': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'aiohttp.access': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        }
+    },
+})
 
 
 # UTILS
@@ -171,6 +201,8 @@ async def thumbs(request, crop=True):
     except (binascii.Error, UnicodeDecodeError, ValueError):
         return web.HTTPNotFound()
 
+    # WISHLIST add as extra context to the aiohttp.access logger
+    logger.info('Decoded as %s %s', path, w_x_h)
     abspath = args.STORAGE_DIR + path
     try:
         im = Image.open(abspath)

@@ -4,6 +4,7 @@ aiohttp-jinja2
 aiohttp_session[aioredis]
 natsort
 pillow
+project-runpy
 py3exiv2
 
 # Test requirements
