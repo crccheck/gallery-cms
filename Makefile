@@ -13,11 +13,15 @@ clean: ## Delete transient files
 	-find . -type d -name "__pycache__" -exec rm -rf {} \;
 
 build: ## Build assets
-	grunt build
+	npm run build
+
+build/prod:
+	# TODO
+	# autoprefixer
+	# uglify
 
 dev:
-	# grunt dev
-	nodemon --ext py -x python gallery/gallery.py ~/Sync/Photos/buttons --admin ${ADMIN_EMAIL} --no-save-originals
+	npm run dev
 
 test: ## Run test suite
 	pytest --cov
