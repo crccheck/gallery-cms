@@ -9,21 +9,21 @@
     "node": ">=6.5.0"
   },
   "devDependencies": {
-    "autoprefixer": "^6.5.4",
+    "autoprefixer": "^7.1.4",
     "babel-preset-es2015-node6": "^0.4.0",
     "babelify": "^7.3.0",
     "grunt": "^1.0.1",
     "grunt-browser-sync": "^2.2.0",
-    "grunt-browserify": "^5.0.0",
+    "grunt-browserify": "^5.2.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-postcss": "^0.8.0",
+    "grunt-postcss": "^0.9.0",
     "grunt-sass": "^2.0.0",
-    "jquery": "^3.1.1",
-    "js-crc": "^0.1.0",
-    "lazysizes": "^2.0.7",
-    "lodash": "^4.17.2",
+    "jquery": "^3.2.1",
+    "js-crc": "^0.2.0",
+    "lazysizes": "^3.0.0",
+    "lodash": "^4.17.4",
     "normalize.sass": "^3.0.3-2",
     "select2": "^4.0.3",
-    "standard": "^8.6.0"
+    "standard": "^10.0.3"
   }
 }
