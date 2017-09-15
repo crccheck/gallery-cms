@@ -8,7 +8,7 @@
     "watch:css": "node-sass src/styles/ --include-path node_modules --output app --watch",
     "watch:js": "watchify src/scripts/main.js -t babelify -o app/app.js",
     "serve": "nodemon --ext py -x python gallery/gallery.py ~/Sync/Photos/buttons --admin ${ADMIN_EMAIL} --no-save-originals",
-    "proxy": "browser-sync start --proxy \"localhost:8080\" --files app --no-open",
+    "proxy": "browser-sync start --proxy \"localhost:8080\" --files app --files templates --no-open",
     "dev": "concurrently --kill-others 'npm run serve' 'npm run watch:js' 'npm run watch:css' 'npm run proxy'"
   },
   "description": "",

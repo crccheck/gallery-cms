@@ -1,20 +1,30 @@
-<div class="thumb">
-  <img {% if loop_index > 30 %}class=lazyload data-{% endif %}src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
-  <h4>
-    {{ image.path }}
-  </h4>
-  {% set form = image.get_form_fields() %}
-  {% if form['Iptc.Application2.Headline'] %}
-    <p title="Headline">{{ form['Iptc.Application2.Headline'] }}</p>
-  {% endif %}
-  {% if form['Iptc.Application2.Caption'] %}
-    <p title="Caption">{{ form['Iptc.Application2.Caption'] }}</p>
-  {% endif %}
-  {% if form['Iptc.Application2.Keywords'] %}
-    <ul class="keyword-container">
-      {% for keyword in form['Iptc.Application2.Keywords'] %}
-        <li class="keyword">{{ keyword }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+<div class="Photo">
+  <div class="Photo--img-container">
+    {% if loop_index > 30 %}
+      <img class="Photo--img lazyload" data-src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
+    {% else %}
+      <img class="Photo--img" src="{{ image.src['thumb'] }}" title="{{ image.src['original'] }}">
+    {% endif %}
+  </div>
+  <div class="Photo--content">
+    <h4>
+      {{ image.path }}
+    </h4>
+    {% set form = image.get_form_fields() %}
+    {% if form['Iptc.Application2.Headline'] %}
+      <p title="Headline">{{ form['Iptc.Application2.Headline'] }}</p>
+    {% endif %}
+    {% if form['Iptc.Application2.Caption'] %}
+      <p title="Caption">{{ form['Iptc.Application2.Caption'] }}</p>
+    {% endif %}
+  </div>
+  <footer class="Photo--footer">
+    {% if form['Iptc.Application2.Keywords'] %}
+      <ul class="keyword-container">
+        {% for keyword in form['Iptc.Application2.Keywords'] %}
+          <li class="keyword">{{ keyword }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </footer>
 </div>

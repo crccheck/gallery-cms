@@ -2,7 +2,7 @@
 
 $background: powderblue;
 $accent: royalblue;
-$text: #111;
+$text: #222;
 
 
 html {
@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  background: $background;
+  background-color: $background;
   color: $text;
 }
 
@@ -31,7 +31,7 @@ a {
 }
 
 .navbar {
-  background: $accent;
+  background-color: #1a936f;
   border-bottom: 1px solid darken($accent, 20%);
   color: #eee;
   display: flex;
@@ -46,6 +46,14 @@ a {
   }
 }
 
+@mixin keyword() {
+  background-color: #95afba;
+  border-radius: 0.25em;
+  color: #eee;
+  font-size: 0.8rem;
+  padding: 0.35em;
+}
+
 .nav-keywords {
   ul {
     list-style: none;
@@ -53,15 +61,11 @@ a {
     text-align: center;
   }
   li {
-    background: $accent;
-    border-radius: 0.25em;
-    color: #eee;
+    @include keyword();
     cursor: pointer;
     display: inline-block;
-    font-size: 0.75em;
     margin-bottom: 0.2em;
-    margin-right: 0.2em;
-    padding: 0.2em;
+    margin-right: 0.25em;
 
     &.active {
       background: lighten($accent, 8%);
@@ -85,85 +89,13 @@ a {
   justify-content: space-around;
 }
 
-.thumb {
-  background: lighten($background, 5%);
-  border-radius: 0.25em;
-  flex-basis: 200px;
-  margin-bottom: 0.5em;
-  overflow: hidden;
-
-  @media (max-width: 600px) {
-    flex-basis: 50%;
-  }
-
-  img {
-    display: block;
-    padding: 0.2rem;
-    width: 100%;
-  }
-
-  h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  p {
-    margin: 0;
-  }
-
-  label {
-    font-size: 0.8rem;
-  }
-
-  input {
-    background: transparent;
-    border: none;
-    width: 100%;
-
-    &:focus {
-      background: lighten($background, 10%);
-      border-bottom: 1px solid $accent;
-    }
-  }
-
-  select {
-    width: 100%;
-  }
-  option {
-    display: inline;
-    margin-right: 0.25em;
-  }
-
-  .keyword-container {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .keyword {
-    background: $accent;
-    border-radius: 0.25em;
-    color: #eee;
-    display: inline-block;
-    font-size: 0.75em;
-    padding: 0.2em;
-    margin-bottom: 0.2em;
-  }
-
-  button {
-    font-size: 0.8rem;
-    margin-top: 0.5em;
-    text-transform: lowercase;
-    width: 100%;
-  }
-}
+@import 'Photo';
 
 .thumb-hide {
   display: none;
 }
 
-footer {
+.Footer {
   border-top: 1px solid darken($background, 10%);
   color: mix($background, $text, 25%);
   font-family: serif;

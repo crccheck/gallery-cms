@@ -1,11 +1,11 @@
 import $ from 'jquery'
 import _uniq from 'lodash/uniq'
-import {crc32} from 'js-crc'
+import { crc32 } from 'js-crc'
 import 'lazysizes'
 import 'select2'
 
 function getKeywords () {
-  return _uniq($('.thumb .keyword').toArray().map((x) => x.innerHTML)).sort()
+  return _uniq($('.Photo .keyword').toArray().map((x) => x.innerHTML)).sort()
 }
 
 let allKeywords = []
@@ -44,7 +44,8 @@ function updateKeywords () {
 }
 
 // FIXME this causes the browser to freeze because there are so many elements
-$('form.thumb').one('click', (evt) => {
+// TODO Use deferred syntax but keep .one logic
+$('form.Photo').one('click', (evt) => {
   const $elem = $(evt.currentTarget)
   $elem.find('select').select2({
     data: allKeywords,
@@ -61,22 +62,22 @@ $('form').on('submit', function (evt) {
 
   const $form = $(this)
   $.post($form.attr('action'), $form.serialize())
-  .done(function (data) {
-    const $button = $form.find('button')
-    $button.text('saved!').addClass('success')
-    setTimeout(() => {
-      $button.text('save').removeClass('success')
-    }, 2000)
+    .done(function (data) {
+      const $button = $form.find('button')
+      $button.text('saved!').addClass('success')
+      setTimeout(() => {
+        $button.text('save').removeClass('success')
+      }, 2000)
 
-    // Update 'src' if user renamed file
-    $form.find('input[name=src]').val(data.src)
+      // Update 'src' if user renamed file
+      $form.find('input[name=src]').val(data.src)
 
-    // Update keyword datastore
-    updateKeywords()
-  })
-  .fail(function (xhr, textStatus, message) {
-    window.alert(message)
-  })
+      // Update keyword datastore
+      updateKeywords()
+    })
+    .fail(function (xhr, textStatus, message) {
+      window.alert(message)
+    })
 })
 
 indexKeywords()
