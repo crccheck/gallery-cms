@@ -23,15 +23,16 @@ build/prod:
 dev:
 	npm run dev
 
+# WIP If you have trouble with this, run `add2virtualenv gallery`
 test: ## Run test suite
 	pytest --cov
 
 docker/release: ## Build and push a new release to Docker Hub
-	grunt build
+docker/release: build
 	docker-compose build
 	docker tag gallerycms_web crccheck/gallery-cms
 	docker push crccheck/gallery-cms
 
 docker/test: clean
 	docker-compose build
-	docker-compose run web make test
+	docker-compose run --rm web make test

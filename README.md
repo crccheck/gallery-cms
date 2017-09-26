@@ -56,15 +56,8 @@ Google Oauth2 app is required to accept logins and edits.
 Dev workflow
 ------------
 
-Auto reload in dev. Run in two terminal windows:
-
-    nodemon -w gallery -e py -x python gallery/gallery.py [options]
-    grunt dev
-
-I've combined them into one window before, but the logging output becomes too
-hard to read.
+    npm run dev
 
 ### Running tests in Docker
 
-    docker-compose build
-    docker-compose run --rm web make test
+    make docker/test
