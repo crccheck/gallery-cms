@@ -27,6 +27,9 @@ dev:
 test: ## Run test suite
 	pytest --cov
 
+tdd:
+	ptw
+
 docker/release: ## Build and push a new release to Docker Hub
 docker/release: build
 	docker-compose build

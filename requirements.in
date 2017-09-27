@@ -8,9 +8,10 @@ project-runpy
 py3exiv2
 
 # Test requirements
-pytest
 coverage
+pytest
 pytest-cov
+pytest-watch
 
 # Dev requirements
 pip-tools

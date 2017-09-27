@@ -195,36 +195,42 @@ async def homepage(request):
 
 
 async def thumbs(request, crop=True):
+    """
+    Return an image/jpeg image that's a thumbnail of the encoded request.
+    """
     encoded = request.match_info['encoded']
-    try:
-        __, w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 3)
-    except (binascii.Error, UnicodeDecodeError, ValueError):
-        return web.HTTPNotFound()
 
-    # WISHLIST add as extra context to the aiohttp.access logger
-    logger.info('Decoded as %s %s', path, w_x_h)
-    abspath = args.STORAGE_DIR + path
-    try:
-        im = Image.open(abspath)
-    except (FileNotFoundError, IsADirectoryError):
-        return web.HTTPNotFound()
+    cached_thumb = os.path.join(args.cache, encoded)
+    if not os.path.isfile(cached_thumb):
+        try:
+            __, w_x_h, path = decode(CIPHER_KEY, encoded).split(':', 3)
+        except (binascii.Error, UnicodeDecodeError, ValueError):
+            return web.HTTPNotFound()
 
-    thumb_dimension = [int(x) for x in w_x_h.split('x')]
-    bytes_file = BytesIO()
+        # WISHLIST add as extra context to the aiohttp.access logger
+        logger.info('Decoded as %s %s', path, w_x_h)
+        abspath = args.STORAGE_DIR + path
+        try:
+            im = Image.open(abspath)
+        except (FileNotFoundError, IsADirectoryError):
+            return web.HTTPNotFound()
 
-    if crop:
-        cropped_im = crop_1(im)
-        cropped_im.thumbnail(thumb_dimension)
-        cropped_im.save(bytes_file, 'jpeg')
-    else:
-        im.thumbnail(thumb_dimension)
-        im.save(bytes_file, 'jpeg')
+        thumb_dimension = [int(x) for x in w_x_h.split('x')]
+        with open(cached_thumb, 'wb') as fh:
+            if crop:
+                cropped_im = crop_1(im)
+                cropped_im.thumbnail(thumb_dimension)
+                cropped_im.save(fh, 'jpeg')
+            else:
+                im.thumbnail(thumb_dimension)
+                im.save(fh, 'jpeg')
 
-    return web.Response(
-        status=200, body=bytes_file.getvalue(), content_type='image/jpeg',
-        headers={
-            'Cache-Control': 'max-age=86400',
-        })
+    with open(cached_thumb, 'rb') as fh:
+        return web.Response(
+            status=200, body=fh.read(), content_type='image/jpeg',
+            headers={
+                'Cache-Control': 'max-age=86400',
+            })
 
 
 async def save(request):
@@ -324,7 +330,6 @@ def create_app(loop=None):
     app.router.add_static('/static', os.path.join(BASE_DIR, 'app'))
     app.router.add_route('GET', '/', homepage)
     app.router.add_route('GET', '/thumbs/{encoded}', thumbs)
-    # app.router.add_route('GET', '/thumbs/{dimensions}/{image}', thumbs)
     app.router.add_route('POST', '/save/', save)
     app.router.add_route('GET', '/login/', login)
     app.router.add_route('GET', '/logout/', logout)
@@ -364,9 +369,17 @@ if __name__ == '__main__':
         'STORAGE_DIR', type=dir_w_ok,
         help='Directory to serve images from')
     parser.add_argument(
+        '--cache',
+        type=dir_w_ok,
+        help='Directory to cache thumbnails. Defaults to STORAGE_DIR/.cache')
+    parser.add_argument(
         '--admin', metavar='EMAIL', action='append', dest='admins',
         help='Google emails to give admin access')
     args = parser.parse_args()
+    if args.cache is None:
+        args.cache = os.path.join(args.STORAGE_DIR, '.cache')
+    if not os.path.isdir(args.cache):
+        os.makedirs(args.cache)
 
     app = create_app()
 

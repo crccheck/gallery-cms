@@ -70,28 +70,26 @@ async def test_item():
 
 
 async def test_handler_thumbs_404s_for_bad_requests():
-    req = MagicMock()
+    req = MagicMock(match_info={'encoded': 'gibberish'})
 
-    req.match_info = {'encoded': 'gibberish'}
-    resp = await thumbs(req)
-    assert resp.status == 404
+    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, cache='/tmp', create=True):
+        resp = await thumbs(req)
+        assert resp.status == 404
 
-    # A directory instead of an image
-    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+        # A directory instead of an image
         req.match_info = {'encoded': encode(CIPHER_KEY, '1x1:/')}
         resp = await thumbs(req)
-    assert resp.status == 404
+        assert resp.status == 404
 
-    # Missing file
-    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+        # Missing file
         req.match_info = {'encoded': encode(CIPHER_KEY, '1x1:/haha.jpg')}
         resp = await thumbs(req)
-    assert resp.status == 404
+        assert resp.status == 404
 
 
 async def test_handler_thumbs_delivers_jpeg():
     req = MagicMock(match_info={'encoded': encode(CIPHER_KEY, 'v1:1x1:/Lenna.jpg')})
-    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, create=True):
+    with patch('gallery.gallery.args', STORAGE_DIR=FIXTURES_DIR, cache='/tmp', create=True):
         resp = await thumbs(req)
     assert resp.status == 200
     assert resp.headers['content-type'] == 'image/jpeg'
