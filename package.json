@@ -1,6 +1,6 @@
 {
   "name": "gallery-cms",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "build:css": "node-sass src/styles/ --include-path node_modules --output app",
     "build:js": "browserify src/scripts/main.js -t babelify -o app/app.js",
