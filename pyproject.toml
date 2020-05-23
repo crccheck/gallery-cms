@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "gallery-cms"
+version = "0.0.0" # defer to package.json
+description = "" # defer to package.json
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.8"
+# py3exiv2
+
+aiohttp = "^3.6.2"
+aioauth-client = "^0.21.0"
+aiohttp-jinja2 = "^1.2.0"
+aiohttp_session = {extras = ["aioredis"], version = "^2.9.0"}
+natsort = "^7.0.1"
+pillow = "^7.1.2"
+project-runpy = "^1.0.1"
+
+[tool.poetry.dev-dependencies]
+coverage = "^5.1"
+flake8 = "^3.8.2"
+pytest = "^5.4.2"
+pytest-cov = "^2.9.0"
+pytest-watch = "^4.2.0"
