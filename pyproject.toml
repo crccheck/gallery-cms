@@ -15,6 +15,7 @@ aiohttp_session = {extras = ["aioredis"], version = "^2.9.0"}
 natsort = "^7.0.1"
 pillow = "^7.1.2"
 project-runpy = "^1.0.1"
+iptcinfo3 = "^2.1.4"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.1"
@@ -22,3 +23,4 @@ flake8 = "^3.8.2"
 pytest = "^5.4.2"
 pytest-cov = "^2.9.0"
 pytest-watch = "^4.2.0"
+mypy = "^0.770"

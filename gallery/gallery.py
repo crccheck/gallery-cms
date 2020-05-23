@@ -11,7 +11,6 @@ import re
 import shutil
 from collections import namedtuple
 from glob import iglob
-from io import BytesIO
 from urllib.parse import quote
 
 import aiohttp_jinja2
@@ -21,11 +20,11 @@ from aioauth_client import GoogleClient
 from aiohttp import web
 from aiohttp_session import setup as setup_session, get_session
 from aiohttp_session.redis_storage import RedisStorage
+from iptcinfo3 import IPTCInfo
 from PIL import Image
-from pyexiv2 import ImageMetadata
 from natsort import natsorted
 
-from crop import crop_1
+from .crop import crop_1
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -58,7 +57,10 @@ logging.config.dictConfig({
             'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
-        }
+        },
+        'iptcinfo': {
+            'level': 'WARNING',
+        },
     },
 })
 
@@ -116,8 +118,7 @@ class Item():
     def __init__(self, path):
         self.path = path
         self.abspath = args.STORAGE_DIR + path  # why does os.path.join not work?
-        self.meta = ImageMetadata(self.abspath)
-        self.meta.read()
+        self.meta = IPTCInfo(self.abspath)
         im = Image.open(self.abspath)
         self.dimensions = Dimensions(*im.size)
         self.filesize = os.path.getsize(self.abspath)
@@ -146,16 +147,13 @@ class Item():
     def get_safe_value(self, key):
         """
         Get the meta value or an empty string.
-
-        http://python3-exiv2.readthedocs.io/en/latest/api.html
-        http://python3-exiv2.readthedocs.io/en/latest/tutorial.html
         """
         try:
-            val = self.meta[key].value
-            if self.meta[key].repeatable:
-                return val
+            val = self.meta[key]
+            if val and isinstance(val, (list, tuple)):
+                return val[0]
 
-            return val[0]
+            return val
 
         except KeyError:
             return ''
@@ -163,11 +161,11 @@ class Item():
     def get_form_fields(self):
         ret = {
             'Iptc.Application2.Headline':
-                self.get_safe_value('Iptc.Application2.Headline'),
+                self.get_safe_value('Headline'),
             'Iptc.Application2.Caption':
-                self.get_safe_value('Iptc.Application2.Caption'),
+                self.get_safe_value('caption/abstract'),
             'Iptc.Application2.Keywords':
-                self.get_safe_value('Iptc.Application2.Keywords'),
+                self.get_safe_value('keywords'),
         }
         return ret
 
@@ -183,7 +181,7 @@ async def homepage(request):
     all_items = (Item(x.replace(args.STORAGE_DIR, '')) for x in all_jpegs)
     all_images = natsorted(
         all_items,
-        key=lambda x: (x.get_safe_value('Iptc.Application2.Headline') or str(x)).upper(),
+        key=lambda x: (x.get_safe_value('headline') or str(x)).upper(),
     )
 
     return {
@@ -262,14 +260,14 @@ async def save(request):
 
     # Update meta
     # XXX Must be kept up to date with Item.get_form_fields
-    item.meta['Iptc.Application2.Headline'] = [data.get('Iptc.Application2.Headline', '')]
-    item.meta['Iptc.Application2.Caption'] = [data.get('Iptc.Application2.Caption', '')]
-    item.meta['Iptc.Application2.Keywords'] = data.getall('Iptc.Application2.Keywords', [])
+    item.meta['headline'] = data.get('Iptc.Application2.Headline', '')
+    item.meta['caption/abstract'] = data.get('Iptc.Application2.Caption', '')
+    item.meta['keywords'] = data.getall('Iptc.Application2.Keywords', [])
 
     if args.save_originals and not os.path.isfile(item.backup_abspath):
         shutil.copyfile(item.abspath, item.backup_abspath)
     # WISHLIST don't write() if nothing changed
-    item.meta.write()
+    item.meta.save()
 
     response_data = dict(item.get_form_fields(), src=new_src)
     return web.Response(
@@ -284,6 +282,7 @@ async def save(request):
     )
 
 
+
 async def login(request):
     session = await get_session(request)
 
@@ -295,10 +294,11 @@ async def login(request):
     # FIXME not picking up https
     client.params['redirect_uri'] = '{}://{}{}'.format(request.scheme, request.host, request.path)
 
-    if client.shared_key not in request.GET:  # 'code' not in request.GET
+    print(request.query)
+    if client.shared_key not in request.query:  # 'code' not in request.GET
         return web.HTTPFound(client.get_authorize_url())
 
-    access_token, __ = await client.get_access_token(request.GET)
+    access_token, __ = await client.get_access_token(request.query)
     user, info = await client.user_info()
     # TODO store in session storage
 

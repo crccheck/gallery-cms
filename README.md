@@ -19,11 +19,6 @@ tweaks; things like mass-tagging and naming should be done elsewhere.
   [lock-in]: https://en.wikipedia.org/wiki/Vendor_lock-in
   [IPTC]: http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 
-Installation on OSX
--------------------
-
-pyexiv2 is Unix only, sorry.
-
 Usage
 -----
 
