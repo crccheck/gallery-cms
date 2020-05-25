@@ -1,7 +1,7 @@
 import { h } from 'preact';
+import Router from 'preact-router';
 
-import Album from './Album'
-import logo from './logo.png';
+import AlbumPage from './AlbumPage'
 import './App.css';
 
 function App() {
@@ -10,7 +10,9 @@ function App() {
       <header className="App-header">
         Learn Preact
       </header>
-      <Album path="." />
+      <Router>
+        <AlbumPage path="album/:dir" default />
+      </Router>
     </div >
   );
 }

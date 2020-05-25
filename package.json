@@ -13,7 +13,8 @@
   "private": true,
   "author": "Chris Chang <c@crccheck.com> (https://crccheck.com/blog)",
   "dependencies": {
-    "preact": "^10.4.1"
+    "preact": "^10.4.1",
+    "preact-router": "^3.2.1"
   },
   "webDependencies": {},
   "devDependencies": {
