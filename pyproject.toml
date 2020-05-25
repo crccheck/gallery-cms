@@ -16,6 +16,9 @@ natsort = "^7.0.1"
 pillow = "^7.1.2"
 project-runpy = "^1.0.1"
 iptcinfo3 = "^2.1.4"
+starlette = "^0.13.4"
+uvicorn = "^0.11.5"
+graphene = "^2.1.8"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.1"

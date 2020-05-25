@@ -17,7 +17,8 @@ build/prod:
 	# uglify
 
 dev:
-	npm run dev
+	# npm run dev
+	uvicorn --reload gallery.server:app
 
 # WIP If you have trouble with this, run `add2virtualenv gallery`
 test: ## Run test suite
