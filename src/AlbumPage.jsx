@@ -17,6 +17,7 @@ query GetAlbum($path: String!) {
         node {
           ... on Image {
             path
+            thumb
             __typename
           }
           ... on Album {
@@ -29,6 +30,13 @@ query GetAlbum($path: String!) {
   }
 }
 `
+
+function AlbumPageThumb({ image }) {
+  // TODO get image width/height/AR
+  return (
+    <img src={image.thumb} loading="lazy" alt="…" width="200" height="200"></img>
+  )
+}
 
 function AlbumPage({ url, ...rest }) {
   console.dir(rest)
@@ -50,7 +58,7 @@ function AlbumPage({ url, ...rest }) {
       {node.__typename === 'Album' &&
         <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
       {node.__typename === 'Image' &&
-        <div>Image: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
+        <div>Image: <Link href={`/album/${node.path}`}><AlbumPageThumb image={node} /> {node.path}</Link></div>}
     </div>))}
   </div>)
 }

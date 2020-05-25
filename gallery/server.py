@@ -7,7 +7,9 @@ from starlette.applications import Starlette
 from starlette.graphql import GraphQLApp
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-from starlette.routing import Route
+from starlette.routing import Mount, Route
+from starlette.staticfiles import StaticFiles
+
 from iptcinfo3 import IPTCInfo
 
 
@@ -41,6 +43,9 @@ class Image(graphene.ObjectType):
     path = graphene.ID()
     file_info = graphene.Field(ImageFileInfo)
     iptc = graphene.Field(ImageIPTC)
+    # WIP
+    src = graphene.String()
+    thumb = graphene.String()
 
     def resolve_file_info(parent, info):
         info = parent["path"].stat()
@@ -54,6 +59,14 @@ class Image(graphene.ObjectType):
 
     def resolve_iptc(parent, info):
         return IPTCInfo(parent["path"])
+
+    def resolve_src(parent, info):
+        request = info.context["request"]
+        return request.url_for("static", path=str(parent["path"]))
+
+    def resolve_thumb(parent, info):
+        request = info.context["request"]
+        return request.url_for("static", path=str(parent["path"]))
 
 
 class Album(graphene.ObjectType):
@@ -112,7 +125,10 @@ class Query(graphene.ObjectType):
         }
 
 
-routes = [Route("/graphql", GraphQLApp(schema=graphene.Schema(query=Query)))]
+routes = [
+    Route("/graphql", GraphQLApp(schema=graphene.Schema(query=Query))),
+    Mount("/static", app=StaticFiles(directory=BASE_DIR), name="static"),
+]
 
 middleware = [
     Middleware(
