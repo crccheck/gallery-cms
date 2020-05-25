@@ -2,9 +2,12 @@
 *.pyc
 .cache/
 .coverage
-app/app.css
-app/app.js
-node_modules/
+
+# Snowpack
+.build
+build
+web_modules
+node_modules
 
 # Temporary files
 gallery/fixtures/tmp*
