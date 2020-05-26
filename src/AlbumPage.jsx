@@ -58,7 +58,7 @@ function AlbumPage({ url, ...rest }) {
       {node.__typename === 'Album' &&
         <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
       {node.__typename === 'Image' &&
-        <div>Image: <Link href={`/album/${node.path}`}><AlbumPageThumb image={node} /> {node.path}</Link></div>}
+        <div>Image: <AlbumPageThumb image={node} /> {node.path}</div>}
     </div>))}
   </div>)
 }

@@ -9,11 +9,12 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
-
 from iptcinfo3 import IPTCInfo
 
+from . import routes
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.getenv("BASE_DIR", os.path.dirname(os.path.abspath(__file__)))
 
 
 class ImageFileInfo(graphene.ObjectType):
@@ -62,11 +63,11 @@ class Image(graphene.ObjectType):
 
     def resolve_src(parent, info):
         request = info.context["request"]
-        return request.url_for("static", path=str(parent["path"]))
+        return request.url_for("static", path=str(parent["path"].relative_to(BASE_DIR)))
 
     def resolve_thumb(parent, info):
         request = info.context["request"]
-        return request.url_for("static", path=str(parent["path"]))
+        return request.url_for("thumbs", path=str(parent["path"].relative_to(BASE_DIR)))
 
 
 class Album(graphene.ObjectType):
@@ -106,7 +107,7 @@ class Query(graphene.ObjectType):
 
     def resolve_image(parent, info, *, path):
         # TODO prevent priveledge escalation ../../ paths
-        abs_path = Path(".", path)
+        abs_path = Path(BASE_DIR + path)
         if not abs_path.exists():
             raise Exception("Image not found")
         return {
@@ -115,7 +116,7 @@ class Query(graphene.ObjectType):
 
     def resolve_album(parent, info, *, path):
         # TODO prevent priveledge escalation ../../ paths
-        abs_path = Path(".", path)
+        abs_path = Path(BASE_DIR + path)
         if not abs_path.exists():
             raise Exception("Album not found")
         if not abs_path.is_dir():
@@ -128,6 +129,7 @@ class Query(graphene.ObjectType):
 routes = [
     Route("/graphql", GraphQLApp(schema=graphene.Schema(query=Query))),
     Mount("/static", app=StaticFiles(directory=BASE_DIR), name="static"),
+    Route("/thumbs/{path:path}", routes.thumbs, name="thumbs"),
 ]
 
 middleware = [
