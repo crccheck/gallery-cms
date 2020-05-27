@@ -1,15 +1,18 @@
 import os
 from pathlib import Path
+from textwrap import dedent
 
 import graphene
 from graphene import relay
+from iptcinfo3 import IPTCInfo
+from libxmp.consts import XMP_NS_XMP
+from libxmp.utils import file_to_dict
 from starlette.applications import Starlette
 from starlette.graphql import GraphQLApp
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
-from iptcinfo3 import IPTCInfo
 
 from . import routes
 
@@ -40,10 +43,29 @@ class ImageIPTC(graphene.ObjectType):
         return parent["keywords"]
 
 
+class ImageXMP(graphene.ObjectType):
+    rating = graphene.Int(
+        required=True,
+        default_value=0,
+        description=dedent(
+            """
+        -1 == "rejected"
+        0 == "unrated"
+        1 to 5 == your rating
+        https://iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#image-rating
+        """
+        ),
+    )
+
+    def resolve_rating(parent, info):
+        return parent.get("xmp:Rating") or 0
+
+
 class Image(graphene.ObjectType):
     path = graphene.ID()
     file_info = graphene.Field(ImageFileInfo)
     iptc = graphene.Field(ImageIPTC)
+    xmp = graphene.Field(ImageXMP)
     # WIP
     src = graphene.String()
     thumb = graphene.String()
@@ -60,6 +82,13 @@ class Image(graphene.ObjectType):
 
     def resolve_iptc(parent, info):
         return IPTCInfo(parent["path"], inp_charset="utf_8")
+
+    def resolve_xmp(parent, info):
+        xmp = file_to_dict(str(parent["path"]))
+        if XMP_NS_XMP not in xmp:
+            return {}
+
+        return {key: value for key, value, options in xmp[XMP_NS_XMP]}
 
     def resolve_src(parent, info):
         request = info.context["request"]
@@ -129,7 +158,7 @@ class Query(graphene.ObjectType):
         }
 
 
-routes = [
+starlette_routes = [
     Route("/graphql", GraphQLApp(schema=graphene.Schema(query=Query))),
     Mount("/static", app=StaticFiles(directory=BASE_DIR), name="static"),
     Route("/thumbs/{path:path}", routes.thumbs, name="thumbs"),
@@ -145,4 +174,4 @@ middleware = [
     )
 ]
 
-app = Starlette(routes=routes, middleware=middleware)
+app = Starlette(routes=starlette_routes, middleware=middleware)

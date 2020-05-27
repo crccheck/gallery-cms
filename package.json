@@ -21,7 +21,7 @@
     "@snowpack/app-scripts-preact": "^0.8.0",
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/preact": "^1.0.2",
-    "jest": "^25.4.0",
+    "jest": "^26.0.1",
     "prettier": "^2.0.0",
     "sass": "^1.26.5",
     "snowpack": "^2.0.0-rc.12"

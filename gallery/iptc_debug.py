@@ -26,6 +26,16 @@ def iptcinfo(file_path: str):
             print(f"{v}\t{k}\t{iptc_value}")
 
 
+def xmp(file_path: str):
+    from libxmp.utils import file_to_dict
+    from libxmp.consts import XMP_NS_XMP
+
+    xmp = file_to_dict(file_path)
+    for key, value, options in xmp[XMP_NS_XMP]:
+        print(key, value)
+
+
 if __name__ == "__main__":
     iptcinfo(sys.argv[1])
     pil(sys.argv[1])
+    xmp(sys.argv[1])

@@ -40,7 +40,11 @@ Requirements
 
 Ubuntu packages:
 
-    apt-get install libexiv2-dev libboost-python-dev
+    apt-get install libboost-python-dev libexempi3
+
+MacOS packages:
+
+    brew install exempi
 
 Redis is also required for session storage persistence, but it would be easy to
 make this completely database free.
