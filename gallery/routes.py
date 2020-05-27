@@ -1,10 +1,9 @@
-import datetime as dt
 import os
 from io import BytesIO
 from pathlib import Path
 
 from PIL import Image
-from starlette.responses import Response, PlainTextResponse, FileResponse
+from starlette.responses import Response, PlainTextResponse
 
 # TODO centralize this
 BASE_DIR = os.getenv("BASE_DIR", os.path.dirname(os.path.abspath(__file__)))
