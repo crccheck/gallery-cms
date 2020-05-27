@@ -56,3 +56,10 @@ Dev workflow
 ### Running tests in Docker
 
     make docker/test
+
+
+Notes
+-----
+
+Apple's _Preview_ can read and write metadata, but it may not be IPTC metdata.
+We only support IPTC for now.

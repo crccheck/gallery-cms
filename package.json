@@ -23,6 +23,7 @@
     "@testing-library/preact": "^1.0.2",
     "jest": "^25.4.0",
     "prettier": "^2.0.0",
+    "sass": "^1.26.5",
     "snowpack": "^2.0.0-rc.12"
   },
   "prettier": {

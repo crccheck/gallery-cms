@@ -1,8 +1,10 @@
 import { h } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
-import { Link } from 'preact-router/match';
+import { Link } from 'preact-router/match'
 
+import Thumbnail from './Thumbnail'
 import { query } from './graphql'
+import './AlbumPage.css'
 
 const ALBUM_QUERY = `
 query GetAlbum($path: String!) {
@@ -18,6 +20,10 @@ query GetAlbum($path: String!) {
           ... on Image {
             path
             thumb
+            iptc {
+              caption
+              keywords
+            }
             __typename
           }
           ... on Album {
@@ -31,35 +37,26 @@ query GetAlbum($path: String!) {
 }
 `
 
-function AlbumPageThumb({ image }) {
-  // TODO get image width/height/AR
-  return (
-    <img src={image.thumb} loading="lazy" alt="…" width="200" height="200"></img>
-  )
-}
-
-function AlbumPage({ url, ...rest }) {
-  console.dir(rest)
-  // const path = rest.default ? '.' : 'hmm'
+function AlbumPage({ url, ...props }) {
   // Can't use props.matches because preact-router can't match slashes
   const path = url.substr(7)
   const [contents, setAlbum] = useState({});
   useEffect(async () => {
-    console.log('fetch start')
     const { data: { album }, errors } = await query(ALBUM_QUERY, { path })
-    console.log('fetch done', album)
     setAlbum(album.contents)
   }, [url])
 
-  console.log('path', path, contents)
-  return (<div className="Album">
+  // console.log('path', path, contents)
+  return (<div className="AlbumPage">
     <h2>Album {path}</h2>
-    {contents?.edges?.map(({ node }) => (<div>
-      {node.__typename === 'Album' &&
-        <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
-      {node.__typename === 'Image' &&
-        <div>Image: <AlbumPageThumb image={node} /> {node.path}</div>}
-    </div>))}
+    <div className="AlbumPage--flex-container">
+      {contents?.edges?.map(({ node }) => (<div className="AlbumPage--tile">
+        {node.__typename === 'Album' &&
+          <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
+        {node.__typename === 'Image' &&
+          <div><Thumbnail image={node} /></div>}
+      </div>))}
+    </div>
   </div>)
 }
 

@@ -1,7 +1,7 @@
 {
   "extends": "@snowpack/app-scripts-preact",
   "scripts": {
-    "proxy:api": "proxy http://localhost:8000/graphql --to /graphql"
+    "build:scss": "sass"
   },
   "plugins": []
 }

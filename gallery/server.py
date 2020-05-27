@@ -34,10 +34,10 @@ class ImageIPTC(graphene.ObjectType):
     keywords = graphene.List(graphene.String, description="keywords")
 
     def resolve_caption(parent, info):
-        return parent["caption/abstract"].decode("utf-8")
+        return parent["caption/abstract"]
 
     def resolve_keywords(parent, info):
-        return [x.decode("utf-8") for x in parent["keywords"]]
+        return parent["keywords"]
 
 
 class Image(graphene.ObjectType):
@@ -59,7 +59,7 @@ class Image(graphene.ObjectType):
         }
 
     def resolve_iptc(parent, info):
-        return IPTCInfo(parent["path"])
+        return IPTCInfo(parent["path"], inp_charset="utf_8")
 
     def resolve_src(parent, info):
         request = info.context["request"]
@@ -84,6 +84,9 @@ class Album(graphene.ObjectType):
                 paths.append({"path": x, "type": "Image"})
         return paths
 
+    def resolve_path(parent, info):
+        return parent["path"].relative_to(BASE_DIR)
+
 
 class AlbumContent(graphene.Union):
     class Meta:
@@ -107,7 +110,7 @@ class Query(graphene.ObjectType):
 
     def resolve_image(parent, info, *, path):
         # TODO prevent priveledge escalation ../../ paths
-        abs_path = Path(BASE_DIR + path)
+        abs_path = Path(BASE_DIR, path)
         if not abs_path.exists():
             raise Exception("Image not found")
         return {
@@ -116,7 +119,7 @@ class Query(graphene.ObjectType):
 
     def resolve_album(parent, info, *, path):
         # TODO prevent priveledge escalation ../../ paths
-        abs_path = Path(BASE_DIR + path)
+        abs_path = Path(BASE_DIR, path)
         if not abs_path.exists():
             raise Exception("Album not found")
         if not abs_path.is_dir():
