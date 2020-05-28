@@ -37,7 +37,7 @@ function Thumbnail({ image }) {
       <ul className="Thumbnail--keywords">
         {image.iptc.keywords.map((keyword) => <li>{keyword}</li>)}
       </ul>
-      <div className="Thumbnail--rating" onMouseLeave={() => setRatingUI(image.xmp.rating)}>
+      <div className="Thumbnail--rating" title="Image rating" onMouseLeave={() => setRatingUI(image.xmp.rating)}>
         {[1, 2, 3, 4, 5].map((x) =>
           <span
             onClick={() => x != image.xmp.rating && setRating(image, x)}

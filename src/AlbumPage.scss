@@ -6,7 +6,6 @@
 .AlbumPage--tile {
   flex: 0 1 auto;
   background-color: white;
-  border: 1px solid #aaa;
   padding: 1em;
   margin: 0.25em;
   border-radius: 0.25em;
@@ -46,11 +45,13 @@
   text-align: left;
 
   > li {
+    background: white;
+    border-radius: 0.5em;
+    color: grey;
     display: inline-block;
+    font-size: 0.9em;
     margin-left: 0.3em;
-    border: 1px solid #bbb;
-    border-radius: 0.3em;
-    padding: 0.2em
+    padding: 0.2em 0.25em;
   }
 }
 

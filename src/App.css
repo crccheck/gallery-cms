@@ -1,18 +1,16 @@
 .App {
-  background-color: #eee;
+  background-color: #f6f1eb;
   text-align: center;
+  color: #283252;
 }
 
 .App-header {
-  background-color: #282c34;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+  background-color: #283252;
+  color: #cfd4e2;
 
-.App-link {
-  color: #61dafb;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: calc(10px + 2vmin);
+  padding: 0.5em 0.2em;
 }

@@ -76,6 +76,9 @@ class Image(graphene.ObjectType):
     src = graphene.String()
     thumb = graphene.String()
 
+    def resolve_path(parent, info):
+        return parent["path"].relative_to(BASE_DIR)
+
     def resolve_file_info(parent, info):
         info = parent["path"].stat()
         return {
