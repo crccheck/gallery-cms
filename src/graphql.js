@@ -1,7 +1,7 @@
 // This might be a decent GraphQL client
 // https://www.npmjs.com/package/@urql/preact
 
-const GRAPHQL_URL = 'http://localhost:8000/graphql'
+const GRAPHQL_URL = 'http://localhost:8081/graphql'
 
 export async function query(query, variables) {
   const response = await fetch(GRAPHQL_URL, {

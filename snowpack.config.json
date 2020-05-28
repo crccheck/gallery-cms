@@ -1,7 +1,7 @@
 {
   "extends": "@snowpack/app-scripts-preact",
   "scripts": {
-    "build:scss": "sass"
+    "build:scss": "sass $FILE"
   },
   "plugins": []
 }

@@ -4,7 +4,7 @@ import { Link } from 'preact-router/match'
 
 import Thumbnail from './Thumbnail'
 import { query } from './graphql'
-import './AlbumPage.css'
+import './AlbumPage.scss'
 
 const ALBUM_QUERY = `
 query GetAlbum($path: String!) {
@@ -23,6 +23,9 @@ query GetAlbum($path: String!) {
             iptc {
               caption
               keywords
+            }
+            xmp {
+              rating
             }
             __typename
           }

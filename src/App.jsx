@@ -8,7 +8,7 @@ function App() {
   return (
     <div className={'App'}>
       <header className="App-header">
-        Learn Preact
+        Gallery CMS
       </header>
       <Router>
         <AlbumPage path="album/:dir" default />

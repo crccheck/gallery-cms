@@ -2,6 +2,7 @@
   "name": "gallery-cms",
   "version": "1.2.0",
   "scripts": {
+    "dev": "snowpack dev",
     "start": "snowpack dev",
     "build": "snowpack build",
     "test": "jest",
@@ -18,13 +19,13 @@
   },
   "webDependencies": {},
   "devDependencies": {
-    "@snowpack/app-scripts-preact": "^0.8.0",
+    "@snowpack/app-scripts-preact": "^1.0.0",
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/preact": "^1.0.2",
     "jest": "^26.0.1",
     "prettier": "^2.0.0",
     "sass": "^1.26.5",
-    "snowpack": "^2.0.0-rc.12"
+    "snowpack": "^2.0.2"
   },
   "prettier": {
     "singleQuote": true,

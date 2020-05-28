@@ -1,0 +1,73 @@
+.AlbumPage--flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.AlbumPage--tile {
+  flex: 0 1 auto;
+  background-color: white;
+  border: 1px solid #aaa;
+  padding: 1em;
+  margin: 0.25em;
+  border-radius: 0.25em;
+}
+
+.Thumbnail {
+  position: relative;
+
+  img {
+    display: block;
+  }
+}
+
+.Thumbnail--overlay {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+
+  color: white;
+  opacity: 0;
+}
+.Thumbnail:hover .Thumbnail--overlay {
+  opacity: 0.8;
+}
+
+.Thumbnail--caption {
+  background: grey;
+  margin: 0;
+  padding: 0.2em 0;
+}
+
+.Thumbnail--keywords {
+  background: grey;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+
+  > li {
+    display: inline-block;
+    margin-left: 0.3em;
+    border: 1px solid #bbb;
+    border-radius: 0.3em;
+    padding: 0.2em
+  }
+}
+
+.Thumbnail--rating {
+  background: grey;
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  font-size: 1.1em;
+  font-weight: bold;
+
+  > * {
+    padding: 0.2em 0.3em;
+
+    cursor: pointer
+  }
+}
