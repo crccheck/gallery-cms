@@ -20,6 +20,10 @@ query GetAlbum($path: String!) {
           ... on Image {
             path
             thumb
+            attributes {
+              width
+              height
+            }
             iptc {
               caption
               keywords

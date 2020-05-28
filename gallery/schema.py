@@ -3,6 +3,7 @@ from pathlib import Path
 from textwrap import dedent
 
 import graphene
+import PIL
 from graphene import relay
 from iptcinfo3 import IPTCInfo
 from libxmp import XMPFiles
@@ -15,7 +16,7 @@ BASE_DIR = os.getenv("BASE_DIR", os.path.dirname(os.path.abspath(__file__)))
 
 class ImageFileInfo(graphene.ObjectType):
     """
-    meta information about the `Image`
+    meta information about the `Image` from the filesystem
     """
 
     path = graphene.String()
@@ -23,6 +24,17 @@ class ImageFileInfo(graphene.ObjectType):
     created = graphene.Int()
     modified = graphene.Int()
     accessed = graphene.Int()
+
+
+class ImageAttributes(graphene.ObjectType):
+    """
+    meta information about the `Image` from PIL
+    """
+
+    format = graphene.String(required=True)
+    mode = graphene.String(required=True)
+    width = graphene.Int(required=True)
+    height = graphene.Int(required=True)
 
 
 class ImageIPTC(graphene.ObjectType):
@@ -57,6 +69,7 @@ class ImageXMP(graphene.ObjectType):
 class Image(graphene.ObjectType):
     path = graphene.ID()
     file_info = graphene.Field(ImageFileInfo)
+    attributes = graphene.Field(ImageAttributes)
     iptc = graphene.Field(ImageIPTC)
     xmp = graphene.Field(ImageXMP)
     # WIP
@@ -72,6 +85,9 @@ class Image(graphene.ObjectType):
             "modified": info.st_mtime,
             "accessed": info.st_atime,
         }
+
+    def resolve_attributes(parent, info):
+        return PIL.Image.open(parent["path"])
 
     def resolve_iptc(parent, info):
         return IPTCInfo(parent["path"], inp_charset="utf_8")
