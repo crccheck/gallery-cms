@@ -7,6 +7,7 @@ from starlette.responses import Response, PlainTextResponse
 
 # TODO centralize this
 BASE_DIR = os.getenv("BASE_DIR", os.path.dirname(os.path.abspath(__file__)))
+THUMBNAIL_SIZE = (300, 300)
 
 
 def thumbs(request):
@@ -17,7 +18,7 @@ def thumbs(request):
     im = Image.open(image_file)
     # TODO multiple sizes
     # TODO cache thumbnails
-    im.thumbnail((200, 200))
+    im.thumbnail(THUMBNAIL_SIZE)
     fp = BytesIO()
     im.save(fp, format="webp")
 

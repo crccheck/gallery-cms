@@ -28,8 +28,8 @@ function Thumbnail({ image }) {
     image.xmp.rating = data.setRating.image.xmp.rating
     setRatingUI(data.setRating.image.xmp.rating)
   }
-  const width = 200
-  const height = 200 * image.attributes.height / image.attributes.width
+  const width = 500
+  const height = width * image.attributes.height / image.attributes.width
   return (<div className="Thumbnail">
     <img src={image.thumb} loading="lazy" alt={image.iptc.caption} width={width} height={height}></img>
     <div className="Thumbnail--overlay">
