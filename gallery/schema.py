@@ -66,15 +66,41 @@ class ImageXMP(graphene.ObjectType):
         return parent.get("xmp:Rating") or 0
 
 
+class Thumbnail(graphene.ObjectType):
+    src = graphene.String(required=True, description="What to use for the `img[src]`")
+    size = graphene.Int(required=True, description="maximum dimension of the image")
+
+
+class ImageThumbs(graphene.ObjectType):
+    small = graphene.Field(Thumbnail, description="An image suitable for a thumbnail")
+    medium = graphene.Field(Thumbnail, description="An image suitable for mobile")
+    large = graphene.Field(Thumbnail, description="An image suitable for a lightbox")
+
+    def resolve_small(parent, info):
+        request = info.context["request"]
+        url = request.url_for("thumbs", path=str(parent["path"].relative_to(BASE_DIR)))
+        return Thumbnail(src=f"{url}?size=200", size=200)
+
+    def resolve_medium(parent, info):
+        request = info.context["request"]
+        url = request.url_for("thumbs", path=str(parent["path"].relative_to(BASE_DIR)))
+        return Thumbnail(src=f"{url}?size=500", size=500)
+
+    def resolve_large(parent, info):
+        request = info.context["request"]
+        url = request.url_for("thumbs", path=str(parent["path"].relative_to(BASE_DIR)))
+        return Thumbnail(src=f"{url}?size=1000", size=1000)
+
+
 class Image(graphene.ObjectType):
     path = graphene.ID()
     file_info = graphene.Field(ImageFileInfo)
     attributes = graphene.Field(ImageAttributes)
     iptc = graphene.Field(ImageIPTC)
-    xmp = graphene.Field(ImageXMP)
+    xmp = graphene.Field(ImageXMP, required=True)
+    thumbs = graphene.Field(ImageThumbs, required=True)
     # WIP
-    src = graphene.String()
-    thumb = graphene.String()
+    src = graphene.String(required=True)
 
     def resolve_path(parent, info):
         return parent["path"].relative_to(BASE_DIR)
@@ -106,9 +132,8 @@ class Image(graphene.ObjectType):
         request = info.context["request"]
         return request.url_for("static", path=str(parent["path"].relative_to(BASE_DIR)))
 
-    def resolve_thumb(parent, info):
-        request = info.context["request"]
-        return request.url_for("thumbs", path=str(parent["path"].relative_to(BASE_DIR)))
+    def resolve_thumbs(parent, info):
+        return parent
 
 
 class Album(graphene.ObjectType):

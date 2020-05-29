@@ -28,10 +28,21 @@ function Thumbnail({ image }) {
     image.xmp.rating = data.setRating.image.xmp.rating
     setRatingUI(data.setRating.image.xmp.rating)
   }
-  const width = 500
-  const height = width * image.attributes.height / image.attributes.width
+  const arWidth = image.thumbs.medium.size // actual value doesn't matter. we only want the aspect-ratio
+  const arHeight = arWidth * image.attributes.height / image.attributes.width
+  let smallWidth, mediumWidth
+  if (image.attributes.width >= image.attributes.height) {
+    smallWidth = image.thumbs.small.size
+    mediumWidth = image.thumbs.medium.size
+  } else {
+    smallWidth = image.thumbs.small.size / arHeight * arWidth
+    mediumWidth = image.thumbs.medium.size / arHeight * arWidth
+  }
   return (<div className="Thumbnail">
-    <img src={image.thumb} loading="lazy" alt={image.iptc.caption} width={width} height={height}></img>
+    <img
+      src={image.thumbs.small.src}
+      srcset={`${image.thumbs.small.src} ${smallWidth}w, ${image.thumbs.medium.src} ${mediumWidth}w`}
+      loading="lazy" alt={image.iptc.caption} width={arWidth} height={arHeight} />
     <div className="Thumbnail--overlay">
       <p className="Thumbnail--caption">{image.iptc.caption}</p>
       <ul className="Thumbnail--keywords">

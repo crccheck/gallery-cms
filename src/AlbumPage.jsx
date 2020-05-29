@@ -19,7 +19,6 @@ query GetAlbum($path: String!) {
         node {
           ... on Image {
             path
-            thumb
             attributes {
               width
               height
@@ -30,6 +29,19 @@ query GetAlbum($path: String!) {
             }
             xmp {
               rating
+            }
+            thumbs {
+              small {
+                src
+                size
+              }
+              medium {
+                src
+                size
+              }
+              large {
+                src
+              }
             }
             __typename
           }

@@ -8,17 +8,19 @@ from starlette.responses import Response, PlainTextResponse
 # TODO centralize this
 BASE_DIR = os.getenv("BASE_DIR", os.path.dirname(os.path.abspath(__file__)))
 THUMBNAIL_SIZE = (300, 300)
+DEFAULT_SIZE = 200
 
 
 def thumbs(request):
+    # NOTE: PIL won't create a thumbnail larger than the original
+    size = int(request.query_params.get("size", DEFAULT_SIZE))
     image_file = Path(BASE_DIR, request.path_params["path"])
     if not image_file.exists():
         return PlainTextResponse("Not found", status_code=404)
 
     im = Image.open(image_file)
-    # TODO multiple sizes
     # TODO cache thumbnails
-    im.thumbnail(THUMBNAIL_SIZE)
+    im.thumbnail((size, size))
     fp = BytesIO()
     im.save(fp, format="webp")
 
