@@ -39,10 +39,8 @@ query GetAlbum($path: String!) {
                 src
                 size
               }
-              large {
-                src
-              }
             }
+            src
             __typename
           }
           ... on Album {

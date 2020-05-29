@@ -8,7 +8,7 @@ function App() {
   return (
     <div className={'App'}>
       <header className="App-header">
-        <span>Gallery CMS</span> <small>Purely metadata based image management</small>
+        <span>Gallery CMS</span> <small>Metadata based image management</small>
       </header>
       <Router>
         <AlbumPage path="album/:dir" default />

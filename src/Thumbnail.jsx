@@ -16,6 +16,7 @@ mutation SetImageRating($input: SetRatingInput!) {
 `
 
 function Thumbnail({ image }) {
+  // TODO update location hash as we are scrolled into view
   const [rating, setRatingUI] = useState(image.xmp.rating)
 
   const setRating = async (image, newRating) => {
@@ -39,10 +40,12 @@ function Thumbnail({ image }) {
     mediumWidth = image.thumbs.medium.size / arHeight * arWidth
   }
   return (<div className="Thumbnail">
-    <img
-      src={image.thumbs.small.src}
-      srcset={`${image.thumbs.small.src} ${smallWidth}w, ${image.thumbs.medium.src} ${mediumWidth}w`}
-      loading="lazy" alt={image.iptc.caption} width={arWidth} height={arHeight} />
+    <a href={image.src} target="gallery-cms-viewer">
+      <img
+        src={image.thumbs.small.src}
+        srcset={`${image.thumbs.small.src} ${smallWidth}w, ${image.thumbs.medium.src} ${mediumWidth}w`}
+        loading="lazy" alt={image.iptc.caption} width={arWidth} height={arHeight} />
+    </a>
     <div className="Thumbnail--overlay">
       <p className="Thumbnail--caption">{image.iptc.caption}</p>
       <ul className="Thumbnail--keywords">

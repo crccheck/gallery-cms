@@ -18,7 +18,7 @@ build/prod:
 
 dev:
 	# npm run dev
-	uvicorn --reload --port 8081 gallery.server:app
+	uvicorn --reload --host 0.0.0.0 --port 8081 gallery.server:app
 
 # WIP If you have trouble with this, run `add2virtualenv gallery`
 test: ## Run test suite

@@ -19,13 +19,13 @@
   },
   "webDependencies": {},
   "devDependencies": {
-    "@snowpack/app-scripts-preact": "^1.0.0",
-    "@testing-library/jest-dom": "^5.5.0",
+    "@snowpack/app-scripts-preact": "^1.0.4",
+    "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/preact": "^1.0.2",
     "jest": "^26.0.1",
     "prettier": "^2.0.0",
-    "sass": "^1.26.5",
-    "snowpack": "^2.0.2"
+    "sass": "^1.26.7",
+    "snowpack": "^2.0.3"
   },
   "prettier": {
     "singleQuote": true,
