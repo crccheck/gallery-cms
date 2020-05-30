@@ -1,12 +1,12 @@
-import { h } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
-import { Link } from 'preact-router/match'
+import { h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
+import { Link } from 'preact-router/match';
 
-import AppContext from './AppContext'
-import RatingMenu from './RatingMenu'
-import Thumbnail from './Thumbnail'
-import { query } from './graphql'
-import './AlbumPage.scss'
+import AppContext from './AppContext';
+import RatingMenu from './RatingMenu';
+import Thumbnail from './Thumbnail';
+import { query } from './graphql';
+import './AlbumPage.scss';
 
 const ALBUM_QUERY = `
 query GetAlbum($path: String!) {
@@ -54,30 +54,36 @@ query GetAlbum($path: String!) {
     }
   }
 }
-`
+`;
 
 function AlbumPage({ url, ...props }) {
   // Can't use props.matches because preact-router can't match slashes
-  const path = url.substr(7)
+  const path = url.substr(7);
 
   // WISHLIST persist ratings to localStorage
-  const [ratingsVisible, setRatingsVisible] = useState(new Set('012345'))
-  const [contents, setAlbum] = useState({})
+  const [ratingsVisible, setRatingsVisible] = useState(
+    new Set(localStorage.getItem('gcms:ratingsVisible') || '012345')
+  );
+  const [contents, setAlbum] = useState({});
   useEffect(async () => {
-    const { data: { album }, errors } = await query(ALBUM_QUERY, { path })
-    setAlbum(album.contents)
-  }, [url])
+    const {
+      data: { album },
+      errors,
+    } = await query(ALBUM_QUERY, { path });
+    setAlbum(album.contents);
+  }, [url]);
 
   function toggleRating(rating) {
     if (ratingsVisible.has(rating)) {
-      ratingsVisible.delete(rating)
+      ratingsVisible.delete(rating);
     } else {
-      ratingsVisible.add(rating)
+      ratingsVisible.add(rating);
     }
-    setRatingsVisible(new Set(ratingsVisible))
+    localStorage.setItem('gcms:ratingsVisible', [...ratingsVisible].join(''));
+    setRatingsVisible(new Set(ratingsVisible));
   }
 
-  const visibleRatingsClass = [...ratingsVisible].map((x) => `show-rating-${x}`).join(' ')
+  const visibleRatingsClass = [...ratingsVisible].map((x) => `show-rating-${x}`).join(' ');
   return (
     <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
       <div className="AlbumPage Page">
@@ -89,17 +95,19 @@ function AlbumPage({ url, ...props }) {
           <div className={`AlbumPage--flex-container ${visibleRatingsClass}`}>
             {contents?.edges?.map(({ node }) => (
               <div className={`AlbumPage--tile rating-${node?.xmp?.rating}`}>
-                {node.__typename === 'Album' &&
-                  <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
-                {node.__typename === 'Image' &&
-                  <Thumbnail image={node} />}
+                {node.__typename === 'Album' && (
+                  <div>
+                    Album: <Link href={`/album/${node.path}`}> {node.path}</Link>
+                  </div>
+                )}
+                {node.__typename === 'Image' && <Thumbnail image={node} />}
               </div>
             ))}
           </div>
         </div>
       </div>
     </AppContext.Provider>
-  )
+  );
 }
 
-export default AlbumPage
+export default AlbumPage;

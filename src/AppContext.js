@@ -1,6 +1,6 @@
-import { createContext } from 'preact'
+import { createContext } from 'preact';
 
 export default createContext({
   ratingsVisible: [],
-  setRatingsVisible: () => { },
-})
+  setRatingsVisible: () => {},
+});

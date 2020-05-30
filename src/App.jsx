@@ -1,9 +1,8 @@
-import { h } from 'preact'
-import Router from 'preact-router'
+import { h } from 'preact';
+import Router from 'preact-router';
 
-import AlbumPage from './AlbumPage'
-import './App.css'
-
+import AlbumPage from './AlbumPage';
+import './App.css';
 
 export default function App() {
   return (
@@ -14,6 +13,6 @@ export default function App() {
       <Router>
         <AlbumPage path="album/:dir" default />
       </Router>
-    </div >
-  )
+    </div>
+  );
 }
