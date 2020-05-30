@@ -88,7 +88,7 @@ function AlbumPage({ url, ...props }) {
     <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
       <div className="AlbumPage Page">
         <div className="Page--LeftRail">
-          <RatingMenu />
+          <RatingMenu images={contents?.edges?.filter(({ node }) => node.__typename === 'Image').map(({ node }) => node)} />
         </div>
         <div className="Page--Main">
           <h2>Album {path}</h2>
