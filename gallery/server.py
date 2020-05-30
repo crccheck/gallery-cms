@@ -16,6 +16,7 @@ starlette_routes = [
     Route("/graphql", GraphQLApp(schema=schema)),
     Mount("/static", app=StaticFiles(directory=BASE_DIR), name="static"),
     Route("/thumbs/{path:path}", routes.thumbs, name="thumbs"),
+    Mount("", app=StaticFiles(directory="build", html=True)),
 ]
 
 middleware = [

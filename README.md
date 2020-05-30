@@ -1,8 +1,6 @@
 Gallery CMS
 ===========
 
-[![Build Status](https://travis-ci.org/crccheck/gallery-cms.svg?branch=master)](https://travis-ci.org/crccheck/gallery-cms) [![codecov](https://codecov.io/gh/crccheck/gallery-cms/branch/master/graph/badge.svg)](https://codecov.io/gh/crccheck/gallery-cms)
-
 A simple online gallery where the images are the database.
 
 There are many programs and websites for managing your photos. But they all
@@ -55,15 +53,10 @@ Google Oauth2 app is required to accept logins and edits.
 Dev workflow
 ------------
 
+Run the Python server in one terminal:
+
+    make dev
+
+Run the client side server in another terminal:
+
     npm run dev
-
-### Running tests in Docker
-
-    make docker/test
-
-
-Notes
------
-
-Apple's _Preview_ can read and write metadata, but it may not be IPTC metdata.
-We only support IPTC for now.
