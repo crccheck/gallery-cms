@@ -1,10 +1,11 @@
-import { h } from 'preact';
-import Router from 'preact-router';
+import { h } from 'preact'
+import Router from 'preact-router'
 
 import AlbumPage from './AlbumPage'
-import './App.css';
+import './App.css'
 
-function App() {
+
+export default function App() {
   return (
     <div className={'App'}>
       <header className="App-header">
@@ -14,7 +15,5 @@ function App() {
         <AlbumPage path="album/:dir" default />
       </Router>
     </div >
-  );
+  )
 }
-
-export default App;

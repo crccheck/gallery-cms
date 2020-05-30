@@ -2,6 +2,8 @@ import { h } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 import { Link } from 'preact-router/match'
 
+import AppContext from './AppContext'
+import RatingMenu from './RatingMenu'
 import Thumbnail from './Thumbnail'
 import { query } from './graphql'
 import './AlbumPage.scss'
@@ -57,24 +59,47 @@ query GetAlbum($path: String!) {
 function AlbumPage({ url, ...props }) {
   // Can't use props.matches because preact-router can't match slashes
   const path = url.substr(7)
-  const [contents, setAlbum] = useState({});
+
+  // WISHLIST persist ratings to localStorage
+  const [ratingsVisible, setRatingsVisible] = useState(new Set('012345'))
+  const [contents, setAlbum] = useState({})
   useEffect(async () => {
     const { data: { album }, errors } = await query(ALBUM_QUERY, { path })
     setAlbum(album.contents)
   }, [url])
 
-  // console.log('path', path, contents)
-  return (<div className="AlbumPage">
-    <h2>Album {path}</h2>
-    <div className="AlbumPage--flex-container">
-      {contents?.edges?.map(({ node }) => (<div className="AlbumPage--tile">
-        {node.__typename === 'Album' &&
-          <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
-        {node.__typename === 'Image' &&
-          <div><Thumbnail image={node} /></div>}
-      </div>))}
-    </div>
-  </div>)
+  function toggleRating(rating) {
+    if (ratingsVisible.has(rating)) {
+      ratingsVisible.delete(rating)
+    } else {
+      ratingsVisible.add(rating)
+    }
+    setRatingsVisible(new Set(ratingsVisible))
+  }
+
+  const visibleRatingsClass = [...ratingsVisible].map((x) => `show-rating-${x}`).join(' ')
+  return (
+    <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
+      <div className="AlbumPage Page">
+        <div className="Page--LeftRail">
+          <RatingMenu />
+        </div>
+        <div className="Page--Main">
+          <h2>Album {path}</h2>
+          <div className={`AlbumPage--flex-container ${visibleRatingsClass}`}>
+            {contents?.edges?.map(({ node }) => (
+              <div className={`AlbumPage--tile rating-${node?.xmp?.rating}`}>
+                {node.__typename === 'Album' &&
+                  <div>Album: <Link href={`/album/${node.path}`}> {node.path}</Link></div>}
+                {node.__typename === 'Image' &&
+                  <Thumbnail image={node} />}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </AppContext.Provider>
+  )
 }
 
 export default AlbumPage

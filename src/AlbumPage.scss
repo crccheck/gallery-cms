@@ -1,6 +1,37 @@
 $breakpoint-mobile: 540px;
 $Thumbnail--rating-height: 2em;
 
+.Page {
+  display: flex;
+  overflow-x: auto; // breaks position: sticky
+  scroll-snap-type: x mandatory;
+}
+
+.Page--LeftRail {
+  background: #F05440;
+  color: black;
+  flex: 1 0 200px;
+  padding-top: 1em;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+
+  @media (max-width: $breakpoint-mobile) {
+    scroll-snap-align: start;
+  }
+}
+
+.Page--Main {
+  flex: 0 1 auto;
+  min-height: 80vh;
+
+  @media (max-width: $breakpoint-mobile) {
+    scroll-snap-align: start;
+    flex: 1 0 100%;
+  }
+}
+
 .AlbumPage--flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -91,4 +122,36 @@ $Thumbnail--rating-height: 2em;
   @media (max-width: $breakpoint-mobile) {
     bottom: -$Thumbnail--rating-height;
   }
+}
+
+.RatingMenu {
+  .active {
+    font-weight: bold;
+  }
+
+  li {
+    cursor: pointer;
+  }
+}
+
+.AlbumPage--tile {
+  display: none;
+}
+.show-rating-5 .rating-5 {
+  display: block;
+}
+.show-rating-4 .rating-4 {
+  display: block;
+}
+.show-rating-3 .rating-3 {
+  display: block;
+}
+.show-rating-2 .rating-2 {
+  display: block;
+}
+.show-rating-1 .rating-1 {
+  display: block;
+}
+.show-rating-0 .rating-0 {
+  display: block;
 }
