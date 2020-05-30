@@ -7,15 +7,18 @@
 }
 
 .Page--LeftRail {
-  // background: #F05440;
   background-color: #D5433D;
   color: black;
   flex: 1 0 200px;
   padding-top: 1em;
-  align-self: flex-start;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+
+  // Sticky doesn't work w/ scroll-snap :(
+  // position: sticky;
+  // top: 0;
+  // align-self: flex-start;
+  // height: 100%
+
+  align-self: stretch;
 
   @media (max-width: $breakpoint-mobile) {
     scroll-snap-align: start;

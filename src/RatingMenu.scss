@@ -1,6 +1,11 @@
 @import 'variables';
 
 .RatingMenu {
+  // Position hack since "sticky" doesn't work
+  position: relative;
+  top: 0;
+  transition: top 200ms;
+
   ul {
     padding: 0;
   }

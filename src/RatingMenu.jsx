@@ -16,12 +16,11 @@ function RatingMenu({ images }) {
     ['0', 0],
     ['-1', 0],
   ]);
-  images && images.forEach((image) => {
-    ratingCounts.set('' + image.xmp.rating,
-      ratingCounts.get('' + image.xmp.rating) + 1
+  images && images.forEach(({ xmp: { rating } }) => {
+    ratingCounts.set('' + rating,
+      ratingCounts.get('' + rating) + 1
     )
   })
-  console.log(ratingCounts)
   return (
     <div className="RatingMenu">
       Rating

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 
 import AppContext from './AppContext';
@@ -60,11 +60,23 @@ function AlbumPage({ url, ...props }) {
   // Can't use props.matches because preact-router can't match slashes
   const path = url.substr(7);
 
-  // WISHLIST persist ratings to localStorage
   const [ratingsVisible, setRatingsVisible] = useState(
     new Set(localStorage.getItem('gcms:ratingsVisible') || '012345')
   );
   const [contents, setAlbum] = useState({});
+  const ratingMenu = useRef(null);
+  useEffect(() => {
+    let ticking = false;
+    window.addEventListener('scroll', (e) => {
+      if (!ticking) {
+        setTimeout(() => {
+          ratingMenu.current.base.style.top = `${window.scrollY}px`
+          ticking = false;
+        }, 300);
+        ticking = true;
+      }
+    }, { passive: true });
+  }, []);
   useEffect(async () => {
     const {
       data: { album },
@@ -88,7 +100,9 @@ function AlbumPage({ url, ...props }) {
     <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
       <div className="AlbumPage Page">
         <div className="Page--LeftRail">
-          <RatingMenu images={contents?.edges?.filter(({ node }) => node.__typename === 'Image').map(({ node }) => node)} />
+          <RatingMenu
+            ref={ratingMenu}
+            images={contents?.edges?.filter(({ node }) => node.__typename === 'Image').map(({ node }) => node)} />
         </div>
         <div className="Page--Main">
           <h2>Album {path}</h2>
