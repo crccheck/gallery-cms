@@ -3,6 +3,8 @@ import { useContext } from 'preact/hooks'
 
 import AppContext from './AppContext'
 
+import './RatingMenu.scss'
+
 function RatingMenu() {
   const { ratingsVisible, toggleRating } = useContext(AppContext)
   return (<div className="RatingMenu">

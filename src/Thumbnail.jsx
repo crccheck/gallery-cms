@@ -2,6 +2,7 @@ import { h } from 'preact'
 import { useState } from 'preact/hooks'
 
 import { query } from './graphql'
+import './Thumbnail.scss'
 
 const SET_IMAGE_RATING_MUTATION = `
 mutation SetImageRating($input: SetRatingInput!) {

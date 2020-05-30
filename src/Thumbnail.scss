@@ -1,0 +1,75 @@
+@import 'variables';
+
+.Thumbnail {
+  position: relative;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.Thumbnail--overlay {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+
+
+  @media (min-width: $breakpoint-mobile) {
+    > * {
+      background: grey;
+      color: white;
+    }
+
+    opacity: 0;
+    .Thumbnail:hover & {
+      opacity: 0.8;
+    }
+  }
+}
+
+.Thumbnail--caption {
+  margin: 0;
+  padding: 0.2em 0;
+}
+
+.Thumbnail--keywords {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+
+  > li {
+    background: white;
+    border-radius: 0.5em;
+    color: grey;
+    display: inline-block;
+    font-size: 0.9em;
+    margin-left: 0.3em;
+    padding: 0.2em 0.25em;
+  }
+}
+
+.Thumbnail--rating {
+  pointer-events: auto;
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  font-size: 1.1em;
+  font-weight: bold;
+
+  // The little rating stars
+  > * {
+    cursor: pointer;
+    padding: 0.2em 0.3em;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    bottom: -$Thumbnail--rating-height;
+  }
+}
