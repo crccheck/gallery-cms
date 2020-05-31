@@ -1,0 +1,27 @@
+@import 'variables';
+
+.AlbumThumb {
+  a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .placeholder {
+    background-color: $red;
+    border-radius: 0.5rem;
+    color: $white2;
+    font-size: 1.5em;
+    height: 190px;
+    overflow: hidden;
+    transition: background-color 200ms;
+    width: 100%;
+
+    &:hover {
+      background-color: darken($red, 20);
+    }
+  }
+
+  .title {
+    padding: 0.2em 0;
+  }
+}

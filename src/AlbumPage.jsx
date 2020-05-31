@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 
 import AppContext from './AppContext';
+import AlbumThumb from './AlbumThumb';
 import RatingMenu from './RatingMenu';
 import Thumbnail from './Thumbnail';
 import { query } from './graphql';
@@ -109,11 +110,7 @@ function AlbumPage({ url, ...props }) {
           <div className={`AlbumPage--flex-container ${visibleRatingsClass}`}>
             {contents?.edges?.map(({ node }) => (
               <div className={`AlbumPage--tile rating-${node?.xmp?.rating}`}>
-                {node.__typename === 'Album' && (
-                  <div>
-                    Album: <Link href={`/album/${node.path}`}> {node.path}</Link>
-                  </div>
-                )}
+                {node.__typename === 'Album' && <AlbumThumb album={node} />}
                 {node.__typename === 'Image' && <Thumbnail image={node} />}
               </div>
             ))}
