@@ -101,18 +101,20 @@ function AlbumPage({ url, ...props }) {
   const dirArr = location.pathname.split('/')
   dirArr.pop()
   const upDir = dirArr.join('/')
+
+  const albumContents = contents?.edges?.map(({ node }) => node) || [];
   return (
     <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
       <div className="AlbumPage Page">
         <div className="Page--LeftRail">
           <RatingMenu
             ref={ratingMenu}
-            images={contents?.edges?.filter(({ node }) => node.__typename === 'Image').map(({ node }) => node)} />
+            images={albumContents} />
         </div>
         <div className="Page--Main">
           <h2>{path || 'Home'} {path && <small>« <a className="breadcrumb" href={upDir}>go back</a></small>}</h2>
           <div className={`AlbumPage--flex-container ${visibleRatingsClass}`}>
-            {contents?.edges?.map(({ node }) => (
+            {albumContents.map((node) => (
               <div className={`AlbumPage--tile rating-${node?.xmp?.rating}`}>
                 {node.__typename === 'Album' && <AlbumThumb album={node} />}
                 {node.__typename === 'Image' && <Thumbnail image={node} />}
