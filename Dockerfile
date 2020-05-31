@@ -1,17 +1,17 @@
 FROM python:3
 
-# Install requirements
 RUN apt-get -qq update && \
-    apt-get install -y libexiv2-dev libboost-python-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-ADD requirements.txt /app/requirements.txt
-WORKDIR /app
-RUN pip install -r requirements.txt
+  # TODO fine tune these requirements
+  apt-get install -y exempi && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN pip install poetry
 
-# Install app
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-dev --no-interaction --no-ansi
+
 COPY . /app
 
-# HACK to get the test suite to not complain about imports
-ENV PYTHONPATH /app/gallery
-ENV PORT 8080
 EXPOSE 8080
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "gallery.server:app"]

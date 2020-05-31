@@ -11,11 +11,6 @@ clean: ## Delete transient files
 build: ## Build assets
 	npm run build
 
-build/prod:
-	# TODO
-	# autoprefixer
-	# uglify
-
 dev:
 	# npm run dev
 	uvicorn --reload --host 0.0.0.0 --port 8081 gallery.server:app
@@ -27,12 +22,5 @@ test: ## Run test suite
 tdd:
 	ptw -- -sx --disable-pytest-warnings
 
-docker/release: ## Build and push a new release to Docker Hub
-docker/release: build
+docker/build: build
 	docker-compose build
-	docker tag gallerycms_web crccheck/gallery-cms
-	docker push crccheck/gallery-cms
-
-docker/test: clean
-	docker-compose build
-	docker-compose run --rm web make test

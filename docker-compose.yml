@@ -1,16 +1,6 @@
-version: '2'
+version: '3'
 services:
-  redis:
-    image: redis
-
   web:
     build: .
-    depends_on:
-      - redis
-    command: python gallery/gallery.py /data/Gallery
-    # volumes:
-    #   - /path/to/Photos:/data/Gallery:rw
-    environment:
-      OAUTH_CLIENT_ID:
-      OAUTH_CLIENT_SECRET:
-      REDIS_URL: redis://redis:6379
+    ports:
+      - "8080:8080"

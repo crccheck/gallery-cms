@@ -20,15 +20,7 @@ tweaks; things like mass-tagging and naming should be done elsewhere.
 Usage
 -----
 
-Run `python gallery/gallery.py --help` to get started.
-
-### Environment variables
-
-* `CIPHER_KEY` -- Control how thumbnail urls are generated
-* `OAUTH_CLIENT_ID`
-* `OAUTH_CLIENT_SECRET`
-* `PORT` -- Change what port the web server runs on
-* `REDIS_URL` -- Connection url to Redis
+See [`Makefile`](./Makefile)
 
 
 Requirements
@@ -36,18 +28,11 @@ Requirements
 
     make install
 
-Ubuntu packages:
-
-    apt-get install libboost-python-dev libexempi3
-
 MacOS packages:
 
     brew install exempi
 
-Redis is also required for session storage persistence, but it would be easy to
-make this completely database free.
-
-Google Oauth2 app is required to accept logins and edits.
+For Ubuntu, refer to the [`Dockerfile`](./Dockerfile)
 
 
 Dev workflow
