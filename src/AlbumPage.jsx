@@ -97,6 +97,10 @@ function AlbumPage({ url, ...props }) {
   }
 
   const visibleRatingsClass = [...ratingsVisible].map((x) => `show-rating-${x}`).join(' ');
+  // TL;DR: relative urls don't work well, so manually create the absolute url to the parent
+  const dirArr = location.pathname.split('/')
+  dirArr.pop()
+  const upDir = dirArr.join('/')
   return (
     <AppContext.Provider value={{ ratingsVisible, toggleRating }}>
       <div className="AlbumPage Page">
@@ -106,7 +110,7 @@ function AlbumPage({ url, ...props }) {
             images={contents?.edges?.filter(({ node }) => node.__typename === 'Image').map(({ node }) => node)} />
         </div>
         <div className="Page--Main">
-          <h2>Album {path}</h2>
+          <h2>{path || 'Home'} {path && <small>« <a className="breadcrumb" href={upDir}>go back</a></small>}</h2>
           <div className={`AlbumPage--flex-container ${visibleRatingsClass}`}>
             {contents?.edges?.map(({ node }) => (
               <div className={`AlbumPage--tile rating-${node?.xmp?.rating}`}>
