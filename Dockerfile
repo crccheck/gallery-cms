@@ -13,5 +13,5 @@ RUN poetry config virtualenvs.create false \
 
 COPY . /app
 
-EXPOSE 8080
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "gallery.server:app"]
+EXPOSE 5000
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "gallery.server:app"]

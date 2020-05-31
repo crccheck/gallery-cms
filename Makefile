@@ -8,6 +8,7 @@ install: ## Install requirements
 clean: ## Delete transient files
 	-find . -type d -name "__pycache__" -exec rm -rf {} \;
 
+.PHONY: build
 build: ## Build assets
 	npm run build
 
