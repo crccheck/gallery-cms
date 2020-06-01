@@ -59,10 +59,16 @@ query GetAlbum($path: String!) {
 
 function AlbumPage({ url, ...props }) {
   // Can't use props.matches because preact-router can't match slashes
-  const path = url.substr(7);
+  const path = decodeURI(url.substr(7));
 
+  let initialRatingsVisible;
+  try {
+    initialRatingsVisible = JSON.parse(localStorage.getItem('gcms:ratingsVisible'));
+  } catch (err) {
+    initialRatingsVisible = ["0", "1", "2", "3", "4", "5", "undefined"]
+  }
   const [ratingsVisible, setRatingsVisible] = useState(
-    new Set(localStorage.getItem('gcms:ratingsVisible') || '012345')
+    new Set(initialRatingsVisible)
   );
   const [contents, setAlbum] = useState({});
   const ratingMenu = useRef(null);
@@ -92,7 +98,7 @@ function AlbumPage({ url, ...props }) {
     } else {
       ratingsVisible.add(rating);
     }
-    localStorage.setItem('gcms:ratingsVisible', [...ratingsVisible].join(''));
+    localStorage.setItem('gcms:ratingsVisible', JSON.stringify([...ratingsVisible]));
     setRatingsVisible(new Set(ratingsVisible));
   }
 
