@@ -1,6 +1,8 @@
+@import 'variables';
+
 html {
-  background-color: #f6f1eb;
-  color: #283252;
+  background-color: $white2;
+  color: $blue;
 }
 
 .App {
@@ -8,12 +10,11 @@ html {
 }
 
 .App-header {
-  background-color: #283252;
-  color: #cfd4e2;
+  background-color: $blue;
+  color: $white2;
 
   display: flex;
   align-items: center;
   justify-content: space-around;
-  font-size: calc(10px + 2vmin);
   padding: 0.5em 0.2em;
 }

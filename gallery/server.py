@@ -38,6 +38,7 @@ starlette_routes = [
 ]
 
 middleware = [
+    # TODO in production, we don't need CORS, we should disable this
     Middleware(
         # https://www.starlette.io/middleware/#corsmiddleware
         CORSMiddleware,

@@ -14,7 +14,7 @@ build: ## Build assets
 
 dev:
 	# npm run dev
-	uvicorn --reload --host 0.0.0.0 --port 8081 gallery.server:app
+	BASE_DIR=demo uvicorn --reload --host 0.0.0.0 --port 8081 gallery.server:app
 
 # WIP If you have trouble with this, run `add2virtualenv gallery`
 test: ## Run test suite

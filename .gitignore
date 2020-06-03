@@ -1,7 +1,7 @@
 # Generated files
-*.pyc
-.cache/
+.cache
 .coverage
+.pytest_cache
 
 # Snowpack
 .build

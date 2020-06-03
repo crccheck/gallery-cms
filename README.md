@@ -45,3 +45,12 @@ Run the Python server in one terminal:
 Run the client side server in another terminal:
 
     npm run dev
+
+
+Attributions
+------------
+
+https://commons.wikimedia.org/wiki/Special:Random/File
+https://thisartworkdoesnotexist.com/
+https://thishorsedoesnotexist.com/
+https://thispersondoesnotexist.com/

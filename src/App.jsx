@@ -2,7 +2,7 @@ import { h } from 'preact';
 import Router from 'preact-router';
 
 import AlbumPage from './AlbumPage';
-import './App.css';
+import './App.scss';
 
 export default function App() {
   return (
