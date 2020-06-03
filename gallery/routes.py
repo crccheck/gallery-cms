@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from itertools import islice
 from pathlib import Path
 
 from PIL import Image
@@ -37,5 +38,28 @@ def thumbs(request):
             "Cache-Control": f"public, max-age={86400 * 7}",
             # "Last-Modified": f"{last_modified_str} GMT",
         },
+        media_type="image/webp",
+    )
+
+
+def album_thumb(request):
+    size = int(request.query_params.get("size", DEFAULT_SIZE / 2))
+    album_path = Path(BASE_DIR, request.path_params["path"])
+
+    thumb = Image.new("RGB", (size, size))
+    first_four_images = islice(album_path.glob("*.jpg"), 4)
+    for idx, img_path in enumerate(first_four_images):
+        im = Image.open(str(img_path))
+        # TODO crop thumbnails to square before thumbnailing
+        im.thumbnail((size / 2, size / 2))
+        thumb.paste(im, (int(idx / 2) * int(size / 2), (idx % 2) * int(size / 2)))
+
+    fp = BytesIO()
+    thumb.save(fp, format="webp")
+
+    fp.seek(0)
+    return Response(
+        fp.read(),
+        headers={"Cache-Control": f"public, max-age=900"},
         media_type="image/webp",
     )

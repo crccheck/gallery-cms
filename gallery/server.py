@@ -33,6 +33,7 @@ class SpaStaticFiles(StaticFiles):
 starlette_routes = [
     Route("/graphql", GraphQLApp(schema=schema)),
     Mount("/static", app=StaticFiles(directory=BASE_DIR), name="static"),
+    Route("/album/{path:path}", routes.album_thumb, name="album_thumb"),
     Route("/thumbs/{path:path}", routes.thumbs, name="thumbs"),
     Mount("", app=SpaStaticFiles(directory="build", html=True)),
 ]

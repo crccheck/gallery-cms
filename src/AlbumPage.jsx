@@ -48,6 +48,16 @@ query GetAlbum($path: String!) {
           }
           ... on Album {
             path
+            thumbs {
+              small {
+                src
+                size
+              }
+              medium {
+                src
+                size
+              }
+            }
             __typename
           }
         }

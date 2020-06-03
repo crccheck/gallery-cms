@@ -6,18 +6,19 @@
     text-decoration: none;
   }
 
-  .placeholder {
+  img {
     background-color: $red;
-    border-radius: 0.5rem;
     color: $white2;
+    display: block;
     font-size: 1.5em;
-    height: 190px;
+    height: 100%;
     overflow: hidden;
-    transition: background-color 200ms;
+    transition: background-color, opacity 200ms;
     width: 100%;
 
     &:hover {
       background-color: darken($red, 20);
+      opacity: 0.5;
     }
   }
 

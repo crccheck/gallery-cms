@@ -136,9 +136,29 @@ class Image(graphene.ObjectType):
         return parent
 
 
+class AlbumThumbs(graphene.ObjectType):
+    small = graphene.Field(Thumbnail, description="An image suitable for a thumbnail")
+    medium = graphene.Field(Thumbnail, description="An image suitable for mobile")
+
+    def resolve_small(parent, info):
+        request = info.context["request"]
+        url = request.url_for(
+            "album_thumb", path=str(parent["path"].relative_to(BASE_DIR))
+        )
+        return Thumbnail(src=f"{url}?size=200", size=200)
+
+    def resolve_medium(parent, info):
+        request = info.context["request"]
+        url = request.url_for(
+            "album_thumb", path=str(parent["path"].relative_to(BASE_DIR))
+        )
+        return Thumbnail(src=f"{url}?size=500", size=500)
+
+
 class Album(graphene.ObjectType):
     path = graphene.ID()
     contents = relay.ConnectionField("gallery.schema.AlbumContentConnection")
+    thumbs = graphene.Field(AlbumThumbs, required=True)
 
     def resolve_contents(parent, info):
         paths = []
@@ -152,6 +172,9 @@ class Album(graphene.ObjectType):
 
     def resolve_path(parent, info):
         return parent["path"].relative_to(BASE_DIR)
+
+    def resolve_thumbs(parent, info):
+        return parent
 
 
 class AlbumContent(graphene.Union):
