@@ -41,12 +41,6 @@ class ImageIPTC(graphene.ObjectType):
     caption = graphene.String(description="caption/abstract")
     keywords = graphene.List(graphene.String, description="keywords")
 
-    def resolve_caption(parent, info):
-        return parent["caption/abstract"]
-
-    def resolve_keywords(parent, info):
-        return parent["keywords"]
-
 
 class ImageXMP(graphene.ObjectType):
     rating = graphene.Int(
@@ -119,7 +113,10 @@ class Image(graphene.ObjectType):
         return PIL.Image.open(parent["path"])
 
     def resolve_iptc(parent, info):
-        return IPTCInfo(parent["path"], inp_charset="utf_8")
+        iptc_info = IPTCInfo(parent["path"], inp_charset="utf_8")
+        return ImageIPTC(
+            caption=iptc_info["caption/abstract"], keywords=iptc_info["keywords"],
+        )
 
     def resolve_xmp(parent, info):
         xmp = file_to_dict(str(parent["path"]))
@@ -257,8 +254,42 @@ class SetRatingPayload(graphene.Mutation):
         return SetRatingPayload(image=image)
 
 
+class SetKeywordsInput(graphene.InputObjectType):
+    """
+    Set `keywords` to `[]` to clear keywords. Order matters! Set keywords in the
+    order you want them to appear.
+    """
+
+    path = graphene.String(required=True, description="ID of the image")
+    keywords = graphene.List(
+        graphene.String, required=True, description="IPTC keywords"
+    )
+
+
+class SetKeywordsPayload(graphene.Mutation):
+    image = graphene.Field(Image, required=True)
+
+    class Arguments:
+        input = SetKeywordsInput(required=True)
+
+    def mutate(self, info, input):
+        abs_path = Path(BASE_DIR, input["path"])
+        if not abs_path.exists():
+            raise Exception("Image not found")
+
+        image = {"path": abs_path}
+        iptc_info = IPTCInfo(str(abs_path), inp_charset="utf_8")
+        if iptc_info["keywords"] == input["keywords"]:
+            return SetKeywordsPayload(image=image)
+
+        iptc_info["keywords"] = input["keywords"]
+        iptc_info.save()
+        return SetKeywordsPayload(image=image)
+
+
 class Mutation(graphene.ObjectType):
     set_rating = SetRatingPayload.Field()
+    set_keywords = SetKeywordsPayload.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

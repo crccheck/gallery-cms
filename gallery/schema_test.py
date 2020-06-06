@@ -52,10 +52,26 @@ mutation SetImageRating($input: SetRatingInput!) {
     image {
       path
       fileInfo {
-        created
+        modified
       }
       xmp {
         rating
+      }
+    }
+  }
+}
+"""
+SET_KEYWORDS = """
+mutation SetImageKeywords($input: SetKeywordsInput!) {
+  setKeywords(input: $input) {
+    image {
+      path
+      fileInfo {
+        created
+        modified
+      }
+      iptc {
+        keywords
       }
     }
   }
@@ -76,7 +92,7 @@ def test_album_lists_contents():
     executed = client.execute(GET_ALBUM, variables={"path": "fixtures"})
     assert "errors" not in executed
     assert executed["data"]["album"]["path"] == "fixtures"
-    assert len(executed["data"]["album"]["contents"]["edges"]) == 5
+    assert len(executed["data"]["album"]["contents"]["edges"]) == 3
 
 
 def test_image_gets_meta():
@@ -94,3 +110,56 @@ def test_set_rating(image):
     )
     assert "errors" not in executed
     assert executed["data"]["setRating"]["image"]["xmp"]["rating"] == 5
+
+
+def test_set_keywords_noop(image):
+    client = Client(schema)
+    executed = client.execute(
+        SET_KEYWORDS,
+        variables={"input": {"path": image, "keywords": ["lenna", "test"]}},
+    )
+    assert "errors" not in executed
+    assert executed["data"]["setKeywords"]["image"]["iptc"]["keywords"] == [
+        "lenna",
+        "test",
+    ]
+    assert (
+        executed["data"]["setKeywords"]["image"]["fileInfo"]["created"]
+        == executed["data"]["setKeywords"]["image"]["fileInfo"]["modified"]
+    )
+
+
+def test_set_keywords_clear_keywords(image):
+    client = Client(schema)
+    executed = client.execute(
+        SET_KEYWORDS, variables={"input": {"path": image, "keywords": []}}
+    )
+    assert "errors" not in executed
+    assert executed["data"]["setKeywords"]["image"]["iptc"]["keywords"] == []
+    # TODO
+    # assert (
+    #     executed["data"]["setKeywords"]["image"]["fileInfo"]["created"]
+    #     != executed["data"]["setKeywords"]["image"]["fileInfo"]["modified"]
+    # )
+
+
+def test_set_keywords_sets_keywords(image):
+    client = Client(schema)
+    executed = client.execute(
+        SET_KEYWORDS,
+        variables={
+            "input": {"path": image, "keywords": ["the", "quick", "brown", "fox"]}
+        },
+    )
+    assert "errors" not in executed
+    assert executed["data"]["setKeywords"]["image"]["iptc"]["keywords"] == [
+        "the",
+        "quick",
+        "brown",
+        "fox",
+    ]
+    # TODO
+    # assert (
+    #     executed["data"]["setKeywords"]["image"]["fileInfo"]["created"]
+    #     != executed["data"]["setKeywords"]["image"]["fileInfo"]["modified"]
+    # )
