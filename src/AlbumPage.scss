@@ -2,8 +2,13 @@
 
 .Page {
   display: flex;
-  overflow-x: auto; // breaks position: sticky
-  scroll-snap-type: x mandatory;
+  @media (max-width: $breakpoint-mobile) {
+    overflow-x: auto; // breaks position: sticky
+    scroll-snap-type: x mandatory;
+  }
+
+  @media (min-width: $breakpoint-mobile) {
+  }
 
   .breadcrumb {
     font-weight: normal;
@@ -12,21 +17,21 @@
 }
 
 .Page--LeftRail {
+  align-self: stretch;
   background-color: $red;
   color: black;
   flex: 0 0 200px;
   padding-top: 1em;
 
-  // Sticky doesn't work w/ scroll-snap :(
-  // position: sticky;
-  // top: 0;
-  // align-self: flex-start;
-  // height: 100%
-
-  align-self: stretch;
-
   @media (max-width: $breakpoint-mobile) {
     scroll-snap-align: start;
+  }
+
+  @media (min-width: $breakpoint-mobile) {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100%
   }
 }
 

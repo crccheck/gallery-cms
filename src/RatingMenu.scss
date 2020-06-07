@@ -1,8 +1,10 @@
 @import 'variables';
 
 .RatingMenu {
-  // Position hack since "sticky" doesn't work
-  position: relative;
+  @media (max-width: $breakpoint-mobile) {
+    // Position hack since "sticky" doesn't work
+    position: relative;
+  }
   top: 0;
   transition: top 200ms;
 
