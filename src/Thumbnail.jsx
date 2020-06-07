@@ -81,6 +81,7 @@ function Thumbnail({ image }) {
         </div>
       </div>
       {showLightbox && <div className="lightbox">
+        <div className="ui-close" style={{ cursor: 'pointer' }} onClick={() => { setShowLightbox(false); }}>✕</div>
         <img
           src={image.src}
           alt={image.iptc.caption}

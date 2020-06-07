@@ -19,6 +19,14 @@
     z-index: 9;
     overflow: scroll;
   }
+
+  .ui-close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 0.5em;
+    font-size: 1.5rem;
+  }
 }
 
 .Thumbnail--overlay {
