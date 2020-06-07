@@ -19,6 +19,7 @@ mutation SetImageRating($input: SetRatingInput!) {
 function Thumbnail({ image }) {
   // TODO update location hash as we are scrolled into view
   const [rating, setRatingUI] = useState(image.xmp.rating);
+  const [showLightbox, setShowLightbox] = useState(false);
 
   const setRating = async (image, newRating) => {
     const { data, errors } = await query(SET_IMAGE_RATING_MUTATION, {
@@ -44,7 +45,10 @@ function Thumbnail({ image }) {
   }
   return (
     <div className="Thumbnail">
-      <a href={image.src} target="gallery-cms-viewer">
+      <a href={image.src} target="gallery-cms-viewer" onClick={(evt) => {
+        evt.preventDefault();
+        setShowLightbox(true);
+      }}>
         <img
           src={image.thumbs.small.src}
           srcset={`${image.thumbs.small.src} ${smallWidth}w, ${image.thumbs.medium.src} ${mediumWidth}w`}
@@ -76,6 +80,14 @@ function Thumbnail({ image }) {
           ))}
         </div>
       </div>
+      {showLightbox && <div className="lightbox">
+        <img
+          src={image.src}
+          alt={image.iptc.caption}
+          width={arWidth}
+          height={arHeight}
+        />
+      </div>}
     </div>
   );
 }

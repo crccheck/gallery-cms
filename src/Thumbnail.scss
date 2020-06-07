@@ -8,6 +8,17 @@
     width: 100%;
     height: auto;
   }
+
+  .lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #ddd;
+    z-index: 9;
+    overflow: scroll;
+  }
 }
 
 .Thumbnail--overlay {
