@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { Link } from 'preact-router/match';
+import { Link } from 'preact-router';
 
 import AppContext from './AppContext';
 import AlbumThumb from './AlbumThumb';

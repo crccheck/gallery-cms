@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Link } from 'preact-router/match';
+import { Link } from 'preact-router';
 import './AlbumThumb.scss';
 
 export default function AlbumThumb({ album }) {
